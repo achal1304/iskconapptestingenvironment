@@ -258,6 +258,7 @@ class _HomePageLState extends State<HomePageL> {
     var newMin = 0;
     var newSec = 0;
     var y;
+    String nameuser = snapshot.data['Name'];
     if (snapshot.data['Birthday'] == null) {
       olddate = DateTime.now();
     } else {
@@ -298,7 +299,7 @@ class _HomePageLState extends State<HomePageL> {
     Timer(Duration(seconds: 2), () {
       print(DateFormat('dd/MM/yyyy/H:m:s').format(finaldate));
       if (snapshot.data['DOB'] != " ") {
-        _showNotification(finaldate);
+        _showNotification(finaldate, nameuser);
       }
       // if (DateFormat('dd/MM/yyyy').format(DateTime.now()) ==
       //     snapshot.data['DOB']) {
@@ -406,7 +407,7 @@ class _HomePageLState extends State<HomePageL> {
   //   await _showNotification(finaldate);
   // }
 
-  Future<void> _showNotification(DateTime finaldate) async {
+  Future<void> _showNotification(DateTime finaldate, String nameuser) async {
     var scheduledNotificationDateTime = finaldate;
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -417,7 +418,7 @@ class _HomePageLState extends State<HomePageL> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         0,
-        'Happy Birthday',
+        'Happy Birthday ' + nameuser,
         'scheduled body',
         scheduledNotificationDateTime,
         platformChannelSpecifics);

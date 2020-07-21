@@ -68,11 +68,11 @@ class _NormalUsersState extends State<NormalUsers> {
   TextEditingController topicInputController;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  AndroidInitializationSettings androidInitializationSettings;
-  IOSInitializationSettings iosInitializationSettings;
-  InitializationSettings initializationSettings;
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+  // AndroidInitializationSettings androidInitializationSettings;
+  // IOSInitializationSettings iosInitializationSettings;
+  // InitializationSettings initializationSettings;
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
 
   //final List<Message> messages = [];
@@ -814,27 +814,27 @@ class _NormalUsersState extends State<NormalUsers> {
     );
   }
 
-  void showNotification() async {
-    await _showNotification();
-  }
+  // void showNotification() async {
+  //   await _showNotification();
+  // }
 
-  Future<void> _showNotification() async {
-    var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
-    AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-            'channel id', 'channel name', 'channel description');
-    IOSNotificationDetails iOSPlatformChannelSpecifics =
-        IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'scheduled title',
-        'scheduled body',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
-  }
+  // Future<void> _showNotification() async {
+  //   var scheduledNotificationDateTime =
+  //       DateTime.now().add(Duration(seconds: 5));
+  //   AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //           'channel id', 'channel name', 'channel description');
+  //   IOSNotificationDetails iOSPlatformChannelSpecifics =
+  //       IOSNotificationDetails();
+  //   NotificationDetails platformChannelSpecifics = NotificationDetails(
+  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  //   await flutterLocalNotificationsPlugin.schedule(
+  //       0,
+  //       'scheduled title',
+  //       'scheduled body',
+  //       scheduledNotificationDateTime,
+  //       platformChannelSpecifics);
+  // }
 
   void sendTokenToServer(String fcmToken) {
     print('Token: $fcmToken');
