@@ -60,8 +60,17 @@ class _ImageFullState extends State<ImageFull> {
               ],
             )));
             var imageId = await ImageDownloader.downloadImage(widget.url,
-                destination: AndroidDestinationType.custom(
-                    directory: "ISKCON Daily Darshan"));
+                destination: AndroidDestinationType.directoryDownloads).catchError((error) {
+              if (error is PlatformException) {
+                var path = "";
+                if (error.code == "404") {
+                  print("Not Found Error.");
+                } else if (error.code == "unsupported_file") {
+                  print("UnSupported FIle Error.");
+                  path = error.details["unsupported_file_path"];
+                }
+              }
+            });
 
             _displaySnackBar(context, imageId);
             // _scaffoldKey.currentState.showSnackBar(
@@ -94,9 +103,11 @@ class _ImageFullState extends State<ImageFull> {
             onPressed: () async {
               var path = await ImageDownloader.findPath(imageId);
               await ImageDownloader.open(path).catchError((error) {
-                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  content: Text((error as PlatformException).message),
-                ));
+                if (error is PlatformException) {
+                  if (error.code == "preview_error") {
+                    print(error.message);
+                  }
+                }
               });
             }),
       ),

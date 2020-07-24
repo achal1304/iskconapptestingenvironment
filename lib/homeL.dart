@@ -367,7 +367,7 @@ class _HomePageLState extends State<HomePageL> {
         FlutterLocalNotificationsPlugin();
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon1');
+        AndroidInitializationSettings('ic_launcher');
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
@@ -409,19 +409,29 @@ class _HomePageLState extends State<HomePageL> {
 
   Future<void> _showNotification(DateTime finaldate, String nameuser) async {
     var scheduledNotificationDateTime = finaldate;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-            'channel id', 'channel name', 'channel description');
+            'ISKCON NVCC pune', 'ISKCON NVCC pune', 'channel description',
+            // importance: Importance.Max,
+            // priority: Priority.High,
+            // ticker: 'ticker',
+            styleInformation: BigTextStyleInformation('''Dear $nameuser,
+  We wish you a very Happy Birthday.We pray to Sri Sri Radha Vrindavanchandraji that they bestow their blessings upon you and your family profusely. Hare Krishna!
+Yours in service,
+ISKCON NVCC
+PUNE'''));
     IOSNotificationDetails iOSPlatformChannelSpecifics =
         IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'Happy Birthday ' + nameuser,
-        'scheduled body',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
+      0,
+      'Happy Birthday ' + nameuser,
+      'Dear ' + nameuser + ',',
+      scheduledNotificationDateTime,
+      platformChannelSpecifics,
+    );
   }
 
   // Widget adminPage(DocumentSnapshot snapshot) {

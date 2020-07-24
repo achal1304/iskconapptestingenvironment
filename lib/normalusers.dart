@@ -289,6 +289,24 @@ class _NormalUsersState extends State<NormalUsers> {
                 );
               },
             ),
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Donate(
+                        //widget._user,
+                        //widget._googleSignIn,
+                        ),
+                  ),
+                );
+              },
+              leading: FaIcon(
+                FontAwesomeIcons.rupeeSign,
+                size: 25.0,
+              ),
+              title: Text('Donate'),
+            ),
             // ListTile(
             //   leading: FaIcon(
             //     FontAwesomeIcons.plus,
@@ -310,24 +328,7 @@ class _NormalUsersState extends State<NormalUsers> {
             Divider(
               thickness: 0.5,
             ),
-            // ListTile(
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => Donation(
-            //             //widget._user,
-            //             //widget._googleSignIn,
-            //             ),
-            //       ),
-            //     );
-            //   },
-            //   leading: FaIcon(
-            //     FontAwesomeIcons.rupeeSign,
-            //     size: 25.0,
-            //   ),
-            //   title: Text('Donate'),
-            // ),
+
             ListTile(
               leading: FaIcon(
                 FontAwesomeIcons.solidEnvelope,

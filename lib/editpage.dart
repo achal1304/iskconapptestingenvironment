@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'imagefull.dart';
+
 class DescriptionPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DescriptionPage(
@@ -42,7 +44,7 @@ class DescriptionPage extends StatelessWidget {
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.white,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 title: FittedBox(
@@ -56,10 +58,27 @@ class DescriptionPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                background: Image.network(
-                  url,
-                  fit: BoxFit.fill,
+                background: GestureDetector(
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.fitHeight,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ImageFull(
+                          url: url,
+                        ),
+                      ),
+                    );
+                  },
                 ),
+                // background: Image.network(
+
+                //   url,
+                //   fit: BoxFit.fitHeight,
+                // ),
               ),
             ),
           ];
