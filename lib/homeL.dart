@@ -178,7 +178,7 @@ class _HomePageLState extends State<HomePageL> {
   Widget adminPage(DocumentSnapshot snapshot) {
     Timer(Duration(seconds: 2), () {
       // 5s over, navigate to a new page
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => AdminPage(
@@ -306,7 +306,7 @@ class _HomePageLState extends State<HomePageL> {
 
       // }
       // 5s over, navigate to a new page
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => NormalUsers(

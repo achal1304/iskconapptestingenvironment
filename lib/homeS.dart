@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login/crud.dart';
 import 'package:login/normalusers.dart';
+import 'package:login/signupeditprofile.dart';
 import 'package:random_color/random_color.dart';
 
 import 'adminpage.dart';
@@ -144,49 +147,74 @@ class _HomePageSState extends State<HomePageS> {
   }
 
   Widget adminPage(DocumentSnapshot snapshot) {
-    return Center(
-      child: OutlineButton(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        borderSide: BorderSide(color: Colors.white),
-        shape: StadiumBorder(),
-        textColor: Colors.white,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AdminPage(
-                widget._user,
-                widget._googleSignIn,
-              ),
-            ),
-          );
-        },
-        child: Text('Go to Admin Dashboard'),
-      ),
-    );
+    Timer(Duration(seconds: 2), () {
+      // 5s over, navigate to a new page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdminPage(
+            widget._user,
+            widget._googleSignIn,
+          ),
+        ),
+      );
+    });
+    return Container(
+        child: Center(
+            child: Text(
+              "Welcome to ISKCON PUNE",
+              style: TextStyle(
+                  decoration: TextDecoration.none,
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.normal,
+                  fontFeatures: null),
+            )));
+//    return Center(
+//      child: OutlineButton(
+//        padding: EdgeInsets.symmetric(vertical: 15),
+//        borderSide: BorderSide(color: Colors.white),
+//        shape: StadiumBorder(),
+//        textColor: Colors.white,
+//        onPressed: () {
+//          Navigator.push(
+//            context,
+//            MaterialPageRoute(
+//              builder: (context) => AdminPage(
+//                widget._user,
+//                widget._googleSignIn,
+//              ),
+//            ),
+//          );
+//        },
+//        child: Text('Go to Admin Dashboard'),
+//      ),
+//    );
   }
 
   Widget userPage(DocumentSnapshot snapshot) {
-    return Center(
-      child: ButtonTheme(
-        minWidth: 300,
-        child: OutlineButton(
-          padding: EdgeInsets.symmetric(vertical: 15),
-          borderSide: BorderSide(color: Colors.white),
-          shape: StadiumBorder(),
-          textColor: Colors.white,
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NormalUsers(
-                          widget._user,
-                          widget._googleSignIn,
-                        )));
-          },
-          child: Text('Go to Dashboard'),
+    Timer(Duration(seconds: 2), () {
+      // 5s over, navigate to a new page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignUpEditProfile(
+            widget._user,
+            widget._googleSignIn,
+          ),
         ),
-      ),
-    );
+      );
+    });
+    return Container(
+        child: Center(
+            child: Text(
+              "Welcome to ISKCON PUNE",
+              style: TextStyle(
+                  decoration: TextDecoration.none,
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.normal,
+                  fontFeatures: null),
+            )));
   }
 }

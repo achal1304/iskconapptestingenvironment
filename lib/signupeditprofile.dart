@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
 //import 'package:font_awesome_flutter/font';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/getflutter.dart';
@@ -11,25 +14,29 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'crud.dart';
+import 'normalusers.dart';
 
 class Item {
   const Item(this.gender, this.icon);
+
   final String gender;
   final FaIcon icon;
 }
 
-class EditProfile extends StatefulWidget {
+class SignUpEditProfile extends StatefulWidget {
   FirebaseUser _user;
   GoogleSignIn _googleSignIn;
-  EditProfile(FirebaseUser user, GoogleSignIn signIn) {
+
+  SignUpEditProfile(FirebaseUser user, GoogleSignIn signIn) {
     _user = user;
     _googleSignIn = signIn;
   }
+
   @override
-  _EditProfileState createState() => _EditProfileState();
+  _SignUpEditProfileState createState() => _SignUpEditProfileState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _SignUpEditProfileState extends State<SignUpEditProfile> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   String radioButtonItem = '';
 
@@ -37,6 +44,7 @@ class _EditProfileState extends State<EditProfile> {
   int id = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Item selectedGender;
+
   // var arr = [false, false, false, false];
   // List<Item> genders = <Item>[
   //   const Item(
@@ -266,23 +274,14 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Edit Profile',
-          style: TextStyle(color: Colors.black),
-          textScaleFactor: 1.2,
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: FaIcon(Icons.arrow_back_ios),
-          color: Colors.black,
-          iconSize: 35,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+          centerTitle: true,
+          title: Text(
+            'Update Profile',
+            style: TextStyle(color: Colors.black),
+            textScaleFactor: 1.2,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.5),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -662,10 +661,11 @@ class _EditProfileState extends State<EditProfile> {
             Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: GFButton(
-                onPressed: () {
+                onPressed: () async {
                   uname = name.text;
                   uaddress = address.text;
                   checkAndUpdate();
+
                   //getUserProgress();
                   // if (dob.isNotEmpty) {
                   //   Crud().updateDOB(user, dob);
@@ -684,16 +684,45 @@ class _EditProfileState extends State<EditProfile> {
                   // }
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
-                      content: Text('Profile Updated!'),
-                      duration: Duration(seconds: 3),
+                      content: Text('Thanks for updating profile!'),
+                      duration: Duration(seconds: 2),
                     ),
                   );
+//                  Timer(Duration(seconds: 2), () {
+                  // 5s over, navigate to a new page
+//                    Navigator.pushReplacement(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => NormalUsers(
+//                          widget._user,
+//                          widget._googleSignIn,
+//                        ),
+//                      ),
+//                    );
+//                  });
                   //Navigator.pop(context);
                 },
                 text: "Update Profile",
                 shape: GFButtonShape.pills,
                 size: GFSize.LARGE,
               ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.03,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NormalUsers(
+                      widget._user,
+                      widget._googleSignIn,
+                    ),
+                  ),
+                );
+              },
+              child: new Text("Go to dashboard",style: TextStyle(fontStyle: FontStyle.italic,decoration: TextDecoration.underline,color: Colors.blue),),
             ),
           ],
         ),
