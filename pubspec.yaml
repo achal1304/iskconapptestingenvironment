@@ -29,14 +29,14 @@ dependencies:
   firebase_auth: any
   upi_pay: ^0.2.1
   #firebase_database: any
-  cloud_firestore: any
+  cloud_firestore: ^0.13.7
   google_sign_in: any
   firebase_messaging: any
   flutter_slidable: ^0.5.4
   flutter_datetime_picker:
     git:
       url: https://github.com/derohimat/flutter_datetime_picker.git
-  font_awesome_flutter: any
+  font_awesome_flutter: ^8.8.1
   google_fonts: any
   # video_player: any
   just_audio: any
