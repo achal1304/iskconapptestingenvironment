@@ -212,6 +212,17 @@ class Crud {
       // print("subscribedT1Date Updated");
     });
   }
+  addFeedBack(String emailID,String fb)async{
+    DocumentReference documentRef =
+    Firestore.instance.collection("Feedbacks").document(emailID);
+    Firestore.instance.runTransaction(
+            (transaction) async {
+              await documentRef.setData({
+                'EmailID':emailID,
+                'Feedback':fb
+              });
+            });
+  }
 
   editEventData(String topic,
       {String title,

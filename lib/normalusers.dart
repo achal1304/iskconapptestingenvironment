@@ -15,6 +15,7 @@ import 'package:login/editprofile.dart';
 import 'package:login/picker.dart';
 import 'package:login/viewvideo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'feedback.dart';
 // import 'package:login/picker.dart';
 
 // import 'addevent.dart';
@@ -361,6 +362,24 @@ class _NormalUsersState extends State<NormalUsers> {
                         //widget._user,
                         //widget._googleSignIn,
                         ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: FaIcon(
+                Icons.feedback,
+                size: 23.0,
+              ),
+              title: Text('Feedback'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FeedBack(
+                      widget._user,
+                      widget._googleSignIn,
+                    ),
                   ),
                 );
               },

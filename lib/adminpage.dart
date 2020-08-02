@@ -20,6 +20,7 @@ import 'package:login/makeadmin.dart';
 import 'package:login/picker.dart';
 import 'package:login/viewvideo.dart';
 import 'package:path/path.dart' as Path;
+import 'receivedfb.dart';
 
 import 'addaudio.dart';
 import 'addaudio.dart';
@@ -772,6 +773,24 @@ class _AdminPageState extends State<AdminPage> {
             thickness: 0.5,
           ),
           ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReceivedFeedBack(
+                    widget._user,
+                    widget._googleSignIn,
+                  ),
+                ),
+              );
+            },
+            leading: FaIcon(
+              FontAwesomeIcons.video,
+              size: 23.0,
+            ),
+            title: Text('Feedbacks'),
+          ),
+          ListTile(
             leading: FaIcon(
               FontAwesomeIcons.signOutAlt,
               size: 23.0,
@@ -785,6 +804,7 @@ class _AdminPageState extends State<AdminPage> {
               );
             },
           ),
+
           Divider(
             thickness: 0.5,
           ),
