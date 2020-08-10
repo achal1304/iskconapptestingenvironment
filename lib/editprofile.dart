@@ -2,18 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
 //import 'package:font_awesome_flutter/font';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/getflutter.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:login/placedetailview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'crud.dart';
+
+const kGoogleApiKey = "AIzaSyDA2vSkZdEb9_8Gz-ivOP1vW8QOu01xEW0";
 
 class Item {
   const Item(this.gender, this.icon);
+
   final String gender;
   final FaIcon icon;
 }
@@ -21,10 +28,12 @@ class Item {
 class EditProfile extends StatefulWidget {
   FirebaseUser _user;
   GoogleSignIn _googleSignIn;
+
   EditProfile(FirebaseUser user, GoogleSignIn signIn) {
     _user = user;
     _googleSignIn = signIn;
   }
+
   @override
   _EditProfileState createState() => _EditProfileState();
 }
@@ -37,6 +46,7 @@ class _EditProfileState extends State<EditProfile> {
   int id = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Item selectedGender;
+
   // var arr = [false, false, false, false];
   // List<Item> genders = <Item>[
   //   const Item(
@@ -75,6 +85,7 @@ class _EditProfileState extends State<EditProfile> {
   double progress = 0.25;
   String progressPercent = "25%";
   DateTime birthday = DateTime.now();
+  Prediction p;
 
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   static SharedPreferences _sharedPreferences;
@@ -146,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<dynamic> getUserProgress() async {
     final DocumentReference document =
-        Firestore.instance.collection("users").document(widget._user.uid);
+    Firestore.instance.collection("users").document(widget._user.uid);
 
     await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
       setState(() {
@@ -288,7 +299,10 @@ class _EditProfileState extends State<EditProfile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.02,
             ),
             StreamBuilder<DocumentSnapshot>(
                 stream: Firestore.instance
@@ -304,7 +318,10 @@ class _EditProfileState extends State<EditProfile> {
                     progressPercent = snapshot.data['progressPercent'];
                     return Container(
                       padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.08,
+                        left: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.08,
                       ),
                       child: GFProgressBar(
                         percentage: progress < 1.0 ? progress : 1.0,
@@ -320,7 +337,10 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         backgroundColor: Colors.black26,
                         progressBarColor: Colors.blueAccent,
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.8,
                       ),
                     );
                   }
@@ -349,7 +369,10 @@ class _EditProfileState extends State<EditProfile> {
             //   ),
             // ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.02,
             ),
             Center(
               child: CircleAvatar(
@@ -358,7 +381,10 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.02,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
@@ -370,11 +396,13 @@ class _EditProfileState extends State<EditProfile> {
                   hintText: data['Name'],
                   border: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 32.0),
+                      BorderSide(color: Colors.blueAccent, width: 32.0),
                       borderRadius: BorderRadius.circular(25.0)),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
                         width: 32.0),
                     borderRadius: BorderRadius.circular(25.0),
                   ),
@@ -382,31 +410,60 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.03,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
               child: TextFormField(
                 controller: address,
+                maxLines: null,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   prefixIcon: Icon(Icons.my_location),
                   hintText: data['Address'],
                   border: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 32.0),
+                      BorderSide(color: Colors.blueAccent, width: 32.0),
                       borderRadius: BorderRadius.circular(25.0)),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
                         width: 32.0),
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                 ),
+                onTap: () async {
+                  try {
+                    p = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: kGoogleApiKey,
+                        onError: onError,
+                        mode: Mode.fullscreen,
+                        // Mode.fullscreen
+                        language: "en",
+                        components: [new Component(Component.country, "in")]);
+                    // showDetailPlace(p.placeId);
+                  } catch (e) {
+                    return;
+                  }
+                  setState(() {
+                    address.text = p.description;
+                  });
+//                  _handlePressButton();
+                },
+
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.03,
             ),
             //   DropdownButton<Item>(
             //     hint: Text("Gender"),
@@ -487,11 +544,13 @@ class _EditProfileState extends State<EditProfile> {
                   hintText: "DOB :" + data['DOB'],
                   border: OutlineInputBorder(
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 32.0),
+                      BorderSide(color: Colors.blueAccent, width: 32.0),
                       borderRadius: BorderRadius.circular(25.0)),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
                         width: 32.0),
                     borderRadius: BorderRadius.circular(25.0),
                   ),
@@ -499,7 +558,10 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.03,
             ),
             if (data['Gender'] == null)
               Text("Gender :")
@@ -657,10 +719,16 @@ class _EditProfileState extends State<EditProfile> {
             //   ),
             // ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.03,
             ),
             Container(
-              width: MediaQuery.of(context).size.width * 0.8,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.8,
               child: GFButton(
                 onPressed: () {
                   uname = name.text;
@@ -699,5 +767,36 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
+  }
+
+  void onError(PlacesAutocompleteResponse response) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
+  }
+
+//  Future<Null> showDetailPlace(String placeId) async {
+//    if (placeId != null) {
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => PlaceDetailWidget(placeId)),
+//      );
+//    }
+//  }
+
+  Future<void> _handlePressButton() async {
+    try {
+      Prediction p = await PlacesAutocomplete.show(
+          context: context,
+          apiKey: kGoogleApiKey,
+          onError: onError,
+          mode: Mode.fullscreen,
+          // Mode.fullscreen
+          language: "en",
+          components: [new Component(Component.country, "in")]);
+      // showDetailPlace(p.placeId);
+    } catch (e) {
+      return;
+    }
   }
 }

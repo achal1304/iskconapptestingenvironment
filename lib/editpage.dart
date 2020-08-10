@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'imageDialog.dart';
 
 import 'imagefull.dart';
 
 class DescriptionPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   DescriptionPage(
       {@required this.title,
       @required this.description,
@@ -17,6 +19,7 @@ class DescriptionPage extends StatelessWidget {
 
   final title;
   final description;
+
   //final topic;
   final ndate;
   final stime;
@@ -63,15 +66,17 @@ class DescriptionPage extends StatelessWidget {
                     url,
                     fit: BoxFit.fitHeight,
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ImageFull(
-                          url: url,
-                        ),
-                      ),
-                    );
+                  onTap: () async {
+                    await showDialog(
+                        context: context, builder: (_) => ImageDialog(url: url,));
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => ImageDialog(
+//                          url: url,
+//                        ),
+//                      ),
+//                    );
                   },
                 ),
                 // background: Image.network(

@@ -12,9 +12,14 @@ import 'package:getflutter/getflutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+
 
 import 'crud.dart';
 import 'normalusers.dart';
+
+const kGoogleApiKey = "AIzaSyDA2vSkZdEb9_8Gz-ivOP1vW8QOu01xEW0";
 
 class Item {
   const Item(this.gender, this.icon);
@@ -83,6 +88,7 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
   double progress = 0.25;
   String progressPercent = "25%";
   DateTime birthday = DateTime.now();
+  Prediction p;
 
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   static SharedPreferences _sharedPreferences;
@@ -263,6 +269,11 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
 
     super.initState();
   }
+  void onError(PlacesAutocompleteResponse response) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
+  }
 
   TextEditingController name = TextEditingController();
   TextEditingController address = TextEditingController();
@@ -402,6 +413,25 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                 ),
+                onTap: () async {
+                  try {
+                    p = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: kGoogleApiKey,
+                        onError: onError,
+                        mode: Mode.fullscreen,
+                        // Mode.fullscreen
+                        language: "en",
+                        components: [new Component(Component.country, "in")]);
+                    // showDetailPlace(p.placeId);
+                  } catch (e) {
+                    return;
+                  }
+                  setState(() {
+                    address.text = p.description;
+                  });
+//                  _handlePressButton();
+                },
               ),
             ),
             SizedBox(

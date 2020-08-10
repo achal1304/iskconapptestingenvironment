@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 //import 'package:font_awesome_flutter/fa_icon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -18,6 +19,7 @@ class _ImageFullState extends State<ImageFull> {
   bool isLoading = false;
   int _progress = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +62,8 @@ class _ImageFullState extends State<ImageFull> {
               ],
             )));
             var imageId = await ImageDownloader.downloadImage(widget.url,
-                destination: AndroidDestinationType.directoryDownloads).catchError((error) {
+                    destination: AndroidDestinationType.directoryDownloads)
+                .catchError((error) {
               if (error is PlatformException) {
                 var path = "";
                 if (error.code == "404") {
