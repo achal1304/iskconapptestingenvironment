@@ -27,6 +27,7 @@ dependencies:
   google_maps_flutter: ^0.5.28+1
   image_downloader: ^0.20.0
   firebase_auth: any
+  flutter_share: ^1.0.2+1
   flutter_google_places: ^0.2.6
   google_maps_webservice: ^0.0.17
   upi_pay: ^0.2.1

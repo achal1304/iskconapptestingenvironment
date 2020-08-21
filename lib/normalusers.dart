@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -384,6 +385,17 @@ class _NormalUsersState extends State<NormalUsers> {
                 );
               },
             ),
+            ListTile(
+              leading: FaIcon(
+                Icons.share,
+                size: 23.0,
+              ),
+              title: Text('Share App'),
+              onTap: () async{
+                share();
+              },
+            ),
+
             Divider(
               thickness: 0.5,
             ),
@@ -807,6 +819,7 @@ class _NormalUsersState extends State<NormalUsers> {
         onSelectNotification: selectNotification);
   }
 
+
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
@@ -860,5 +873,12 @@ class _NormalUsersState extends State<NormalUsers> {
     print('Token: $fcmToken');
     // send key to your server to allow server to use
     // this token to send push notifications
+  }
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Example share',
+        text: 'Example share text',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Example Chooser Title');
   }
 }
