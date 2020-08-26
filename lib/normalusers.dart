@@ -14,6 +14,7 @@ import 'package:login/demo.dart';
 import 'package:login/donate.dart';
 import 'package:login/editprofile.dart';
 import 'package:login/picker.dart';
+import 'package:login/viewcourses.dart';
 import 'package:login/viewvideo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'feedback.dart';
@@ -80,6 +81,7 @@ class _NormalUsersState extends State<NormalUsers> {
   //final List<Message> messages = [];
   String tok;
   String data1;
+  bool isuseradmin  = true;
 
   @override
   void initState() {
@@ -274,6 +276,24 @@ class _NormalUsersState extends State<NormalUsers> {
             ),
             ListTile(
               leading: FaIcon(
+                FontAwesomeIcons.bookOpen,
+                size: 28.0,
+              ),
+              title: Text('View Courses'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewCourses(
+                      widget._user,
+                      widget._googleSignIn,
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: FaIcon(
                 FontAwesomeIcons.userEdit,
                 size: 28.0,
               ),
@@ -286,6 +306,7 @@ class _NormalUsersState extends State<NormalUsers> {
                       //isAdmin: false,
                       widget._user,
                       widget._googleSignIn,
+
                     ),
                   ),
                 );

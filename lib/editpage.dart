@@ -69,21 +69,8 @@ class DescriptionPage extends StatelessWidget {
                   onTap: () async {
                     await showDialog(
                         context: context, builder: (_) => ImageDialog(url: url,));
-//                    Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) => ImageDialog(
-//                          url: url,
-//                        ),
-//                      ),
-//                    );
                   },
                 ),
-                // background: Image.network(
-
-                //   url,
-                //   fit: BoxFit.fitHeight,
-                // ),
               ),
             ),
           ];

@@ -135,6 +135,41 @@ class Crud {
       },
     );
   }
+  addCourseData(String title,String desc, String sdate,
+      String edate, String Type,String venue,
+      String url, DateTime sd,var arr) async {
+    DocumentReference documentRef =
+    Firestore.instance.collection("Courses").document(desc);
+    Firestore.instance.runTransaction(
+          (transaction) async {
+        await documentRef.setData({
+          'Course Title': title,
+          'Course Description': desc,
+          'Start Date': sdate,
+          'End Date': edate,
+          'URL': url,
+          'Startdatetimestamp': sd,
+          'Type': Type,
+          'Venue': venue,
+          'Registration Form': arr
+        });
+        print("Course Data added!");
+      },
+    );
+  }
+  addRegistrationData(String desc,String em,String un){
+    DocumentReference documentRef =
+    Firestore.instance.collection("Courses").document(desc).collection("Registration").document(em);
+    Firestore.instance.runTransaction(
+          (transaction) async {
+        await documentRef.setData({
+          'Username':un,
+          'Useremail':em
+        });
+        print("Registration Data added!");
+      },
+    );
+  }
 
   addVideoUrl(
     String url,
@@ -246,7 +281,17 @@ class Crud {
       },
     );
   }
+  deleteCourseData(String desc) {
+    DocumentReference documentRef =
+    Firestore.instance.collection("Courses").document(desc);
 
+    Firestore.instance.runTransaction(
+          (transaction) async {
+        await documentRef.delete();
+        print("Course Data deleted!");
+      },
+    );
+  }
   deleteData(String desc) {
     DocumentReference documentRef =
         Firestore.instance.collection("notifications").document(desc);
@@ -320,6 +365,7 @@ class Crud {
     });
   }
 
+
   updateDOB(FirebaseUser user, String dob, DateTime birthday) async {
     DocumentReference documentRef =
         Firestore.instance.collection("users").document(user.uid);
@@ -338,6 +384,17 @@ class Crud {
         Firestore.instance.collection("users").document(user.uid);
     Firestore.instance.runTransaction((transaction) async {
       await documentRef.updateData({
+        'ARR': arr,
+        // 'Phone': user.phoneNumber,
+      });
+      print("Array Updated");
+    });
+  }
+  updateArr1(String desc, var arr) async {
+    DocumentReference documentRef =
+    Firestore.instance.collection("Courses").document(desc);
+    Firestore.instance.runTransaction((transaction) async {
+      await documentRef.setData({
         'ARR': arr,
         // 'Phone': user.phoneNumber,
       });

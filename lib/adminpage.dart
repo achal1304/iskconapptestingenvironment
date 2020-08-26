@@ -20,6 +20,7 @@ import 'package:login/makeadmin.dart';
 import 'package:login/picker.dart';
 import 'package:login/viewvideo.dart';
 import 'package:path/path.dart' as Path;
+import 'addcourses.dart';
 import 'receivedfb.dart';
 
 import 'addaudio.dart';
@@ -31,6 +32,7 @@ import 'customCard.dart';
 import 'demo.dart';
 import 'message.dart';
 import 'msg.dart';
+import 'viewcourses.dart';
 
 //import 'normalusers.dart';
 
@@ -730,6 +732,42 @@ class _AdminPageState extends State<AdminPage> {
                       //widget._user,
                       //widget._googleSignIn,
                       ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: FaIcon(
+              FontAwesomeIcons.book,
+              size: 28.0,
+            ),
+            title: Text('Add Course'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddCourses(
+                    //widget._user,
+                    //widget._googleSignIn,
+                  ),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: FaIcon(
+              FontAwesomeIcons.bookOpen,
+              size: 28.0,
+            ),
+            title: Text('View Course'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ViewCourses(
+                    widget._user,
+                    widget._googleSignIn,
+                  ),
                 ),
               );
             },
