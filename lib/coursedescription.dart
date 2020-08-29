@@ -15,19 +15,21 @@ class CustomCardCoursesDescription extends StatefulWidget {
   // GoogleSignIn _googleSignIn;
   // FirebaseUser _user;
 
-  CustomCardCoursesDescription({@required this.title,
-    @required this.description,
-    //@required this.topic,
-    @required BuildContext context,
-    @required this.isAdmin1,
-    @required this.edate,
-    @required this.stime,
-    @required this.url,
-    @required this.type,
-    @required this.venue,
-    @required this.useremail,
-    @required this.usercoursename,
-    @required this.startdatetimestamp}) {
+  CustomCardCoursesDescription(
+      {@required this.title,
+      @required this.description,
+      //@required this.topic,
+      @required BuildContext context,
+      @required this.isAdmin1,
+      @required this.edate,
+      @required this.stime,
+      @required this.url,
+      @required this.type,
+      @required this.venue,
+      @required this.useremail,
+      @required this.usercoursename,
+      @required this.startdatetimestamp,
+      @required this.registrationform}) {
     c1 = context;
   }
 
@@ -44,6 +46,7 @@ class CustomCardCoursesDescription extends StatefulWidget {
   final useremail;
   final usercoursename;
   final startdatetimestamp;
+  final registrationform;
 
   @override
   _CustomCardCoursesDescriptionState createState() =>
@@ -53,7 +56,15 @@ class CustomCardCoursesDescription extends StatefulWidget {
 class _CustomCardCoursesDescriptionState
     extends State<CustomCardCoursesDescription> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController name = TextEditingController();
+  TextEditingController address = TextEditingController();
+  TextEditingController contact = TextEditingController();
+  TextEditingController na = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool ispresent = false;
+  String cname = "";
+  String caddress = "";
+  String ccontact = "";
 
   @override
   void initState() {
@@ -108,8 +119,7 @@ class _CustomCardCoursesDescriptionState
                   onTap: () async {
                     await showDialog(
                         context: context,
-                        builder: (_) =>
-                            ImageDialog(
+                        builder: (_) => ImageDialog(
                               url: widget.url,
                             ));
                   },
@@ -145,10 +155,7 @@ class _CustomCardCoursesDescriptionState
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.16,
+                    width: MediaQuery.of(context).size.width * 0.16,
                   ),
                   Text(
                     "Ends on: " + widget.edate,
@@ -209,11 +216,11 @@ class _CustomCardCoursesDescriptionState
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      RegisteredUsers(
-                          usercoursename: widget.usercoursename,
-                          useremail: widget.useremail,
-                          description: widget.description)));
+                  builder: (context) => RegisteredUsers(
+                        usercoursename: widget.usercoursename,
+                        useremail: widget.useremail,
+                        description: widget.description,
+                      )));
         },
       );
     } else if (widget.isAdmin1 != true && ispresent == false)
@@ -246,69 +253,84 @@ class _CustomCardCoursesDescriptionState
   }
 
   _showAlertDialog(String desc) async {
+    List<dynamic> arr = widget.registrationform;
     showDialog<String>(
       context: widget.c1,
-      builder: (BuildContext context) =>
-          AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            content: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Form(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+      builder: (BuildContext context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        content: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    _buildchild(arr),
+                    Text(
+                      "Register for the course?",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Divider(),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        Text(
-                          "Register for the course?",
-                          style: TextStyle(
-                            fontSize: 20,
+                        FlatButton(
+                          child: Text(
+                            'No',
+                            style: TextStyle(
+                                color: Colors.red.shade400, fontSize: 15),
                           ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                        SizedBox(height: 40),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            FlatButton(
-                              child: Text(
-                                'No',
-                                style: TextStyle(
-                                    color: Colors.red.shade400, fontSize: 15),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            VerticalDivider(),
-                            FlatButton(
-                              child: Text(
-                                'Yes',
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: 15),
-                              ),
-                              onPressed: () {
-                                //Crud().deleteData(widget.desc);
-                                Crud().addRegistrationData(widget.description,
-                                    widget.useremail, widget.usercoursename);
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text(
-                                      "You have successfully Registered"),
-                                ));
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
+                        VerticalDivider(),
+                        FlatButton(
+                          child: Text(
+                            'Yes',
+                            style: TextStyle(color: Colors.blue, fontSize: 15),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              cname = name.text;
+                              caddress = address.text;
+                              ccontact = contact.text;
+                            });
+                            if (_formKey.currentState.validate()) {
+                              Crud().addRegistrationData(widget.description,
+                                widget.useremail,caddress,ccontact,cname);
+                              _scaffoldKey.currentState.showSnackBar(
+                                SnackBar(
+                                  content: Text('You have registered!'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            }
+//                            Crud().addRegistrationData(widget.description,
+//                                widget.useremail, widget.usercoursename);
+//                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+//                              content: Text("You have successfully Registered"),
+//                            ));
+
+                          },
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
+        ),
+      ),
     );
   }
 
@@ -356,8 +378,10 @@ class _CustomCardCoursesDescriptionState
   }
 
   checkIfLikedOrNot() async {
-    DocumentReference ds = await Firestore.instance.collection("Courses")
-        .document(widget.description).collection("Registration")
+    DocumentReference ds = await Firestore.instance
+        .collection("Courses")
+        .document(widget.description)
+        .collection("Registration")
         .document(widget.useremail);
     Future<Null> snapshot = ds.get().then((DocumentSnapshot snapshot) {
       setState(() {
@@ -365,6 +389,95 @@ class _CustomCardCoursesDescriptionState
       });
     });
   }
+
+  Widget _buildchild(List<dynamic> arr) {
+    return Container(
+        child: Column(
+      children: <Widget>[
+        if (arr.contains("Name"))
+          TextFormField(
+            controller: name,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.person),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              hintText: "Name",
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
+                  borderRadius: BorderRadius.circular(5.0)),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    width: 32.0),
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+            validator: (name) {
+              if (name.isEmpty) {
+                return 'Please enter Name';
+              }
+              return null;
+            },
+          ),
+        SizedBox(height: 5.0,),
+        if (arr.contains("Address"))
+          TextFormField(
+            controller: address,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.my_location),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              hintText: "Address",
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
+                  borderRadius: BorderRadius.circular(5.0)),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    width: 32.0),
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+            validator: (address) {
+              if (address.isEmpty) {
+                return 'Please enter Address';
+              }
+              return null;
+            },
+          ),
+        SizedBox(height: 5.0,),
+        if (arr.contains("Contact No."))
+          TextFormField(
+            controller: contact,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.contact_phone),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              hintText: "Contact No",
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
+                  borderRadius: BorderRadius.circular(5.0)),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    width: 32.0),
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+            validator: (address) {
+              if (address.length != 10) {
+                return 'Please enter valid Contact No.';
+              }
+              return null;
+            },
+          ),
+        SizedBox(height: 5.0,),
+        if (arr.length == 0)
+          Container(
+            height: 0.0,
+            width: 0.0,
+          )
+      ],
+    ));
+  }
+
 //  dynamic data;
 //
 //  checkIfLikedOrNot() async {

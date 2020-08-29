@@ -99,6 +99,7 @@ class _ViewCoursesState extends State<ViewCourses> {
                       startdatetimestamp:daysremain,
                       useremail: widget._user.email,
                       usercoursename: widget._user.displayName,
+                      regform: document['Registration Form']
                     ),
                   );
                 }).toList(),

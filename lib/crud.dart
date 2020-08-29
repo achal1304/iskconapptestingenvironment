@@ -157,14 +157,16 @@ class Crud {
       },
     );
   }
-  addRegistrationData(String desc,String em,String un){
+  addRegistrationData(String desc,String em,String address,String contact,String name){
     DocumentReference documentRef =
     Firestore.instance.collection("Courses").document(desc).collection("Registration").document(em);
     Firestore.instance.runTransaction(
           (transaction) async {
         await documentRef.setData({
-          'Username':un,
-          'Useremail':em
+          'Username':name,
+          'Useremail':em,
+          'Contact No.':contact,
+          'Address':address
         });
         print("Registration Data added!");
       },

@@ -24,7 +24,8 @@ class CustomCardCourses extends StatefulWidget {
     @required this.venue,
     @required this.useremail,
     @required this.usercoursename,
-    @required this.startdatetimestamp}) {
+    @required this.startdatetimestamp,
+    @required this.regform}) {
     c1 = context;
   }
 
@@ -41,6 +42,7 @@ class CustomCardCourses extends StatefulWidget {
   final useremail;
   final usercoursename;
   final startdatetimestamp;
+  final regform;
 
   @override
   _CustomCardCoursesState createState() => _CustomCardCoursesState();
@@ -57,44 +59,45 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
           child: Column(
             children: <Widget>[
               GestureDetector(
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    height: 150,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.85,
-                    child: Image.network(
-                      widget.url,
-                      fit: BoxFit.fitWidth,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  height: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.85,
+                  child: Image.network(
+                    widget.url,
+                    fit: BoxFit.fitWidth,
 
-                    ),
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CustomCardCoursesDescription(
-                              title: widget.title,
-                              description: widget.description,
-                              //topic: document['Topic'],
-                              context: context,
-                              isAdmin1: widget.isAdmin1,
-                              edate: widget.edate,
-                              stime: widget.stime,
-                              url: widget.url,
-                              type: widget.type,
-                              venue: widget.venue,
-                              startdatetimestamp: widget.startdatetimestamp,
-                              useremail: widget.useremail,
-                              usercoursename: widget.usercoursename,
-                            ),
-                      ),
-                    );
-                  },
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CustomCardCoursesDescription(
+                            title: widget.title,
+                            description: widget.description,
+                            //topic: document['Topic'],
+                            context: context,
+                            isAdmin1: widget.isAdmin1,
+                            edate: widget.edate,
+                            stime: widget.stime,
+                            url: widget.url,
+                            type: widget.type,
+                            venue: widget.venue,
+                            startdatetimestamp: widget.startdatetimestamp,
+                            useremail: widget.useremail,
+                            usercoursename: widget.usercoursename,
+                            registrationform:widget.regform
+                          ),
+                    ),
+                  );
+                },
               ),
 
               Padding(
@@ -249,6 +252,7 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                           startdatetimestamp: widget.startdatetimestamp,
                           useremail: widget.useremail,
                           usercoursename: widget.usercoursename,
+                          registrationform:widget.regform
                         ),
                   ),
                 );

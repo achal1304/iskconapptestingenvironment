@@ -31,7 +31,9 @@ class _AddCoursesState extends State<AddCourses> {
   int id = 1;
   bool value1;
   bool value2;
+  bool value3;
   List<String> reqfields = [];
+  List<String> arr = ["Name", "Addres", "Contact No.", "Email ID"];
 
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -45,8 +47,10 @@ class _AddCoursesState extends State<AddCourses> {
   void initState() {
     value1 = false;
     value2 = false;
+    value3 = false;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,49 +256,72 @@ Course end date : $edate''',
                 ),
                 Divider(thickness: 0.5),
                 Container(
-                  child: Column(children: <Widget>[
-                    Text("Registration Form : ",textAlign: TextAlign.left,),
-                    MergeSemantics(
-                      child: ListTile(
-                        title: Text('Name'),
-                        trailing: CupertinoSwitch(
-                            activeColor: Colors.blue,
-                            value: value1,
-                            onChanged: (bool value) {
-                              setState(() {
-                                value1 = value;
-                                _savenswitchValue1(value1,"Name");
-                              });
-                            }
-                        ),
-                        onTap: () {
-                          setState(() {
-                            value1 = !value1;
-                          });
-                        },
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Registration Form : ",
+                        textAlign: TextAlign.left,
                       ),
-                    ),
-                    MergeSemantics(
-                      child: ListTile(
-                        title: Text('Address'),
-                        trailing: CupertinoSwitch(
-                            activeColor: Colors.blue,
-                            value: value2,
-                            onChanged: (bool value) {
-                              setState(() {
-                                value2 = value;
-                                _savenswitchValue1(value2,"Address");
-                              });
-                            }
+
+                      MergeSemantics(
+                        child: ListTile(
+                          title: Text('Name'),
+                          trailing: CupertinoSwitch(
+                              activeColor: Colors.blue,
+                              value: value1,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  value1 = value;
+                                  _savenswitchValue1(value1, "Name");
+                                });
+                              }),
+                          onTap: () {
+                            setState(() {
+                              value1 = !value1;
+                            });
+                          },
                         ),
-                        onTap: () {
-                          setState(() {
-                            value2 = !value2;
-                          });
-                        },
                       ),
-                    ),
-                  ],),
+                      MergeSemantics(
+                        child: ListTile(
+                          title: Text('Address'),
+                          trailing: CupertinoSwitch(
+                              activeColor: Colors.blue,
+                              value: value2,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  value2 = value;
+                                  _savenswitchValue1(value2, "Address");
+                                });
+                              }),
+                          onTap: () {
+                            setState(() {
+                              value2 = !value2;
+                            });
+                          },
+                        ),
+                      ),
+                      MergeSemantics(
+                        child: ListTile(
+                          title: Text('Contact No.'),
+                          trailing: CupertinoSwitch(
+                              activeColor: Colors.blue,
+                              value: value3,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  value3 = value;
+                                  _savenswitchValue1(value3, "Contact No.");
+                                });
+                              }),
+                          onTap: () {
+                            setState(() {
+                              value3 = !value3;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.8,
@@ -357,7 +384,7 @@ Course end date : $edate''',
 
   checkAndUpdate() async {
     Crud().addCourseData(ctitle, cdesc, sdate, edate, radioButtonItem, offevent,
-        imgUrl, _startdate,reqfields);
+        imgUrl, _startdate, reqfields);
   }
 
   Widget offlineEvent() {
@@ -393,15 +420,16 @@ Course end date : $edate''',
         height: MediaQuery.of(context).size.height * 0,
       );
   }
-  _savenswitchValue1(bool value1,String name) async {
-    if(value1 == true){
+
+  _savenswitchValue1(bool value1, String name) async {
+    if (value1 == true) {
       setState(() {
         reqfields.add(name);
       });
-    }
-    else setState(() {
-      reqfields.remove(name);
-    });
+    } else
+      setState(() {
+        reqfields.remove(name);
+      });
   }
 
   Future<String> getImage() async {
@@ -441,4 +469,26 @@ Course end date : $edate''',
             fit: BoxFit.fitWidth,
           ));
   }
+
+//  regist(bool val, String field) {
+//    return MergeSemantics(
+//      child: ListTile(
+//        title: Text(field),
+//        trailing: CupertinoSwitch(
+//            activeColor: Colors.blue,
+//            value: val,
+//            onChanged: (bool value) {
+//              setState(() {
+//                val = value;
+//                _savenswitchValue1(val, field);
+//              });
+//            }),
+//        onTap: () {
+//          setState(() {
+//            val = !val;
+//          });
+//        },
+//      ),
+//    );
+//  }
 }
