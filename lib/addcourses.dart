@@ -27,11 +27,15 @@ class _AddCoursesState extends State<AddCourses> {
   String cdesc = "";
   String iurl = "";
   String radioButtonItem = 'Online';
+  String radioButtonItemPay = 'Free';
+  int payid = 1;
   String offevent = "";
+  String payevent = "";
   int id = 1;
   bool value1;
   bool value2;
   bool value3;
+  int paymentamount = 0;
   List<String> reqfields = [];
   List<String> arr = ["Name", "Addres", "Contact No.", "Email ID"];
 
@@ -42,6 +46,7 @@ class _AddCoursesState extends State<AddCourses> {
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController offlineevent = TextEditingController();
+  TextEditingController paidevent = TextEditingController();
 
   @override
   void initState() {
@@ -232,6 +237,49 @@ Course end date : $edate''',
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.03,
                 ),
+                Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Radio(
+                          value: 1,
+                          groupValue: payid,
+                          onChanged: (val) {
+                            setState(() {
+                              radioButtonItemPay = 'Free';
+                              payid = 1;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Free',
+                          style: new TextStyle(fontSize: 17.0),
+                        ),
+                        Radio(
+                          value: 2,
+                          groupValue: payid,
+                          onChanged: (val) {
+                            setState(() {
+                              radioButtonItemPay = 'Paid';
+                              payid = 2;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Paid',
+                          style: new TextStyle(
+                            fontSize: 17.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                paidEvent(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
                   child: CupertinoButton(
@@ -330,6 +378,8 @@ Course end date : $edate''',
                       ctitle = title.text;
                       cdesc = description.text;
                       offevent = offlineevent.text;
+//                      payevent = paidevent.text;
+                      paymentamount = int.parse(paidevent.text);
                       if (_formKey.currentState.validate() && imgUrl != "") {
                         await checkAndUpdate();
                         _scaffoldKey.currentState.showSnackBar(
@@ -384,7 +434,7 @@ Course end date : $edate''',
 
   checkAndUpdate() async {
     Crud().addCourseData(ctitle, cdesc, sdate, edate, radioButtonItem, offevent,
-        imgUrl, _startdate, reqfields);
+        imgUrl, _startdate, reqfields,paymentamount);
   }
 
   Widget offlineEvent() {
@@ -410,6 +460,40 @@ Course end date : $edate''',
           validator: (offlineevent) {
             if (offlineevent.isEmpty) {
               return 'Please select dates';
+            }
+            return null;
+          },
+        ),
+      );
+    } else
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0,
+      );
+  }
+  Widget paidEvent() {
+    if (radioButtonItemPay == 'Paid') {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+        child: TextFormField(
+          controller: paidevent,
+          maxLines: null,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "Enter ticket amoount",
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
+                borderRadius: BorderRadius.circular(25.0)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  width: 32.0),
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+          ),
+          validator: (paidevent) {
+            if (paidevent.isEmpty) {
+              return 'Please enter amount';
             }
             return null;
           },

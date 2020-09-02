@@ -137,7 +137,7 @@ class Crud {
   }
   addCourseData(String title,String desc, String sdate,
       String edate, String Type,String venue,
-      String url, DateTime sd,var arr) async {
+      String url, DateTime sd,var arr,int paymentamount) async {
     DocumentReference documentRef =
     Firestore.instance.collection("Courses").document(desc);
     Firestore.instance.runTransaction(
@@ -151,7 +151,8 @@ class Crud {
           'Startdatetimestamp': sd,
           'Type': Type,
           'Venue': venue,
-          'Registration Form': arr
+          'Registration Form': arr,
+          'Course fees': paymentamount
         });
         print("Course Data added!");
       },

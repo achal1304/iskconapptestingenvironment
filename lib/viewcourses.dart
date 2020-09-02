@@ -9,6 +9,7 @@ import 'customcardcourses.dart';
 class ViewCourses extends StatefulWidget {
   GoogleSignIn _googleSignIn;
   FirebaseUser _user;
+
   ViewCourses(FirebaseUser user, GoogleSignIn signIn) {
     _user = user;
     _googleSignIn = signIn;
@@ -21,9 +22,10 @@ class ViewCourses extends StatefulWidget {
 class _ViewCoursesState extends State<ViewCourses> {
   dynamic data;
   bool admincheck;
+
   Future<dynamic> getUserName() async {
     final DocumentReference document =
-    Firestore.instance.collection("users").document(widget._user.uid);
+        Firestore.instance.collection("users").document(widget._user.uid);
 
     await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
       setState(() {
@@ -31,7 +33,9 @@ class _ViewCoursesState extends State<ViewCourses> {
       });
     });
   }
-  @override void initState() {
+
+  @override
+  void initState() {
     getUserName();
     super.initState();
   }
@@ -58,55 +62,168 @@ class _ViewCoursesState extends State<ViewCourses> {
           },
         ),
       ),
-      body: Container(
+      body: adminuserview(),
+//    Container(
+//        padding: const EdgeInsets.all(10.0),
+//        child: StreamBuilder<QuerySnapshot>(
+//          stream: Firestore.instance
+//              .collection('Courses').where(
+//              'Startdatetimestamp', isGreaterThanOrEqualTo: Timestamp.now())
+//              .orderBy('Startdatetimestamp')
+//              .snapshots(),
+//          builder:
+//              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+//            switch (snapshot.connectionState) {
+//              case ConnectionState.waiting:
+//                return Text('Loading...');
+//              default:
+//                return ListView(
+//                  children:
+//                  snapshot.data.documents.map((DocumentSnapshot document) {
+//                    Timestamp daystart = document['Startdatetimestamp'];
+//                    DateTime daystartts = daystart.toDate();
+//                    int daysrem = daystartts
+//                        .difference(DateTime.now())
+//                        .inDays;
+//                    int payamount = document['Course fees'];
+//                    String daysremain = daysrem.toString();
+//                    return Card(
+//                      color: Color(0xffffffff),
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.all(Radius.circular(10))
+//                      ),
+//                      child: CustomCardCourses(
+//                        title: document['Course Title'],
+//                        description: document['Course Description'],
+//                        //topic: document['Topic'],
+//                        context: context,
+//                        isAdmin1: admincheck,
+//                        edate: document['End Date'],
+//                        stime: document['Start Date'],
+//                        url: document['URL'],
+//                        type: document['Type'],
+//                        venue: document['Venue'],
+//                        startdatetimestamp: daysremain,
+//                        useremail: widget._user.email,
+//                        usercoursename: widget._user.displayName,
+//                        regform: document['Registration Form'],
+//                        payamount: payamount,
+//                      ),
+//                    );
+//                  }).toList(),
+//                );
+//            }
+//          },
+//        ),
+//      ),
+    );
+  }
+
+  Widget adminuserview() {
+    if (admincheck == true) {
+      return Container(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
-                .collection('Courses').where(
-                'Startdatetimestamp',isGreaterThanOrEqualTo: Timestamp.now())
-            .orderBy('Startdatetimestamp')
-            .snapshots(),
-        builder:
-            (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Text('Loading...');
-            default:
-              return ListView(
-                children:
-                snapshot.data.documents.map((DocumentSnapshot document) {
-                  Timestamp daystart = document['Startdatetimestamp'];
-                  DateTime daystartts = daystart.toDate();
-                  int daysrem = daystartts.difference(DateTime.now()).inDays;
-                  String daysremain = daysrem.toString();
-                  return Card(
-                    color: Color(0xffffffff),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    child: CustomCardCourses(
-                      title: document['Course Title'],
-                      description: document['Course Description'],
-                      //topic: document['Topic'],
-                      context: context,
-                      isAdmin1: admincheck,
-                      edate: document['End Date'],
-                      stime: document['Start Date'],
-                      url: document['URL'],
-                      type: document['Type'],
-                      venue: document['Venue'],
-                      startdatetimestamp:daysremain,
-                      useremail: widget._user.email,
-                      usercoursename: widget._user.displayName,
-                      regform: document['Registration Form']
-                    ),
-                  );
-                }).toList(),
-              );
-          }
-        },
-      ),
-    ),);
+          stream: Firestore.instance
+              .collection('Courses')
+              .orderBy('Startdatetimestamp')
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Text('Loading...');
+              default:
+                return ListView(
+                  children:
+                      snapshot.data.documents.map((DocumentSnapshot document) {
+                    Timestamp daystart = document['Startdatetimestamp'];
+                    DateTime daystartts = daystart.toDate();
+                    int daysrem = daystartts.difference(DateTime.now()).inDays;
+                    int payamount = document['Course fees'];
+                    String daysremain = daysrem.toString();
+                    return Card(
+                      color: Color(0xffffffff),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: CustomCardCourses(
+                        title: document['Course Title'],
+                        description: document['Course Description'],
+                        //topic: document['Topic'],
+                        context: context,
+                        isAdmin1: admincheck,
+                        edate: document['End Date'],
+                        stime: document['Start Date'],
+                        url: document['URL'],
+                        type: document['Type'],
+                        venue: document['Venue'],
+                        startdatetimestamp: daysremain,
+                        useremail: widget._user.email,
+                        usercoursename: widget._user.displayName,
+                        regform: document['Registration Form'],
+                        payamount: payamount,
+                      ),
+                    );
+                  }).toList(),
+                );
+            }
+          },
+        ),
+      );
+    } else
+      return Container(
+        padding: const EdgeInsets.all(10.0),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection('Courses')
+              .where('Startdatetimestamp',
+                  isGreaterThanOrEqualTo: Timestamp.now())
+              .orderBy('Startdatetimestamp')
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Text('Loading...');
+              default:
+                return ListView(
+                  children:
+                      snapshot.data.documents.map((DocumentSnapshot document) {
+                    Timestamp daystart = document['Startdatetimestamp'];
+                    DateTime daystartts = daystart.toDate();
+                    int daysrem = daystartts.difference(DateTime.now()).inDays;
+                    int payamount = document['Course fees'];
+                    String daysremain = daysrem.toString();
+                    return Card(
+                      color: Color(0xffffffff),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: CustomCardCourses(
+                        title: document['Course Title'],
+                        description: document['Course Description'],
+                        //topic: document['Topic'],
+                        context: context,
+                        isAdmin1: admincheck,
+                        edate: document['End Date'],
+                        stime: document['Start Date'],
+                        url: document['URL'],
+                        type: document['Type'],
+                        venue: document['Venue'],
+                        startdatetimestamp: daysremain,
+                        useremail: widget._user.email,
+                        usercoursename: widget._user.displayName,
+                        regform: document['Registration Form'],
+                        payamount: payamount,
+                      ),
+                    );
+                  }).toList(),
+                );
+            }
+          },
+        ),
+      );
   }
 }

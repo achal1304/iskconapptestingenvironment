@@ -25,7 +25,8 @@ class CustomCardCourses extends StatefulWidget {
     @required this.useremail,
     @required this.usercoursename,
     @required this.startdatetimestamp,
-    @required this.regform}) {
+    @required this.regform,
+    @required this.payamount}) {
     c1 = context;
   }
 
@@ -43,6 +44,7 @@ class CustomCardCourses extends StatefulWidget {
   final usercoursename;
   final startdatetimestamp;
   final regform;
+  final int payamount;
 
   @override
   _CustomCardCoursesState createState() => _CustomCardCoursesState();
@@ -71,7 +73,6 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                   child: Image.network(
                     widget.url,
                     fit: BoxFit.fitWidth,
-
                   ),
                 ),
                 onTap: () {
@@ -80,21 +81,21 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                     MaterialPageRoute(
                       builder: (context) =>
                           CustomCardCoursesDescription(
-                            title: widget.title,
-                            description: widget.description,
-                            //topic: document['Topic'],
-                            context: context,
-                            isAdmin1: widget.isAdmin1,
-                            edate: widget.edate,
-                            stime: widget.stime,
-                            url: widget.url,
-                            type: widget.type,
-                            venue: widget.venue,
-                            startdatetimestamp: widget.startdatetimestamp,
-                            useremail: widget.useremail,
-                            usercoursename: widget.usercoursename,
-                            registrationform:widget.regform
-                          ),
+                              title: widget.title,
+                              description: widget.description,
+                              //topic: document['Topic'],
+                              context: context,
+                              isAdmin1: widget.isAdmin1,
+                              edate: widget.edate,
+                              stime: widget.stime,
+                              url: widget.url,
+                              type: widget.type,
+                              venue: widget.venue,
+                              startdatetimestamp: widget.startdatetimestamp,
+                              useremail: widget.useremail,
+                              usercoursename: widget.usercoursename,
+                              registrationform: widget.regform,
+                              payamount: widget.payamount),
                     ),
                   );
                 },
@@ -210,6 +211,17 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
             },
           ),
         ],
+        secondaryActions: <Widget>[
+          new IconSlideAction(
+            caption: 'Edit',
+            color: Colors.blue,
+            icon: Icons.edit,
+            onTap: () {
+//              _showEditDialog(widget.description);
+              //Crud().deleteData(widget.topic);
+            },
+          ),
+        ],
         actionPane: SlidableDrawerActionPane(),
       );
     } else {
@@ -230,7 +242,6 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                 child: Image.network(
                   widget.url,
                   fit: BoxFit.fitWidth,
-
                 ),
               ),
               onTap: () {
@@ -252,7 +263,8 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                           startdatetimestamp: widget.startdatetimestamp,
                           useremail: widget.useremail,
                           usercoursename: widget.usercoursename,
-                          registrationform:widget.regform
+                          registrationform: widget.regform,
+                          payamount: widget.payamount,
                         ),
                   ),
                 );
@@ -360,6 +372,30 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
       );
     }
   }
+
+//  _showEditDialog(String topic) async {
+//    Future editEvent(String topic) async {
+////      String title = taskTitleInputController.text;
+////      String body = taskDescripInputController.text;
+////      String desc = descInputController.text;
+////      if (imgUrl.isNotEmpty)
+////        Crud().addEventData(title, body, desc, sdate, stime, category,
+////            url: imgUrl);
+////      else
+////        Crud().addEventData(title, body, desc, sdate, stime, category);
+//    }
+//    await showDialog<String>(
+//        context: widget.c1,
+//        builder: (BuildContext context) {
+//          return StatefulBuilder(builder: (context, setState) {
+//            return AlertDialog(
+//                shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.all(Radius.circular(15))),
+//            //contentPadding: const EdgeInsets.all(16.0),
+//            content: Wrap(
+//          });
+//        });
+//  }
 
   _showAlertDialog(String desc) {
     showDialog<String>(
