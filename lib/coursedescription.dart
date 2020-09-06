@@ -421,7 +421,7 @@ class _CustomCardCoursesDescriptionState
   }
 
   Widget paidcourse() {
-    if (widget.payamount == null) {
+    if (widget.payamount == 0) {
       return Text("Free Course");
     } else
       return Text("Course Fees : Rs." +
@@ -486,7 +486,7 @@ class _CustomCardCoursesDescriptionState
   }
 
   _updateRegisteredUser() async {
-    if (widget.payamount == null) {
+    if (widget.payamount == 0) {
       if (_formKey.currentState.validate()) {
         await _storedData(_selectedparticipants);
         _scaffoldKey.currentState.showSnackBar(
@@ -530,7 +530,7 @@ class _CustomCardCoursesDescriptionState
   }
 
   Widget paymentstatus() {
-    if (widget.payamount == null)
+    if (widget.payamount == 0)
       return Container(
         height: 0.0,
         width: 0.0,

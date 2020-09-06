@@ -53,6 +53,8 @@ class _AddCoursesState extends State<AddCourses> {
     value1 = false;
     value2 = false;
     value3 = false;
+    offlineevent.text = "";
+//    paidevent.text = "0";
     super.initState();
   }
 
@@ -135,7 +137,12 @@ class _AddCoursesState extends State<AddCourses> {
                             width: 32.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                    ),
+                    ),validator: (description) {
+                    if (description.isEmpty) {
+                      return 'Please enter some description';
+                    }
+                    return null;
+                  },
                   ),
                 ),
                 SizedBox(
@@ -310,7 +317,6 @@ Course end date : $edate''',
                         "Registration Form : ",
                         textAlign: TextAlign.left,
                       ),
-
                       MergeSemantics(
                         child: ListTile(
                           title: Text('Name'),
@@ -379,7 +385,8 @@ Course end date : $edate''',
                       cdesc = description.text;
                       offevent = offlineevent.text;
 //                      payevent = paidevent.text;
-                      paymentamount = int.parse(paidevent.text);
+//                      paymentamount = int.parse(paidevent.text);
+                      radioButtonCheck();
                       if (_formKey.currentState.validate() && imgUrl != "") {
                         await checkAndUpdate();
                         _scaffoldKey.currentState.showSnackBar(
@@ -432,9 +439,15 @@ Course end date : $edate''',
     );
   }
 
+  radioButtonCheck(){
+    if(radioButtonItemPay == "Paid"){
+      paymentamount = int.parse(paidevent.text);
+    }
+    else paymentamount = 0;
+  }
   checkAndUpdate() async {
     Crud().addCourseData(ctitle, cdesc, sdate, edate, radioButtonItem, offevent,
-        imgUrl, _startdate, reqfields,paymentamount);
+        imgUrl, _startdate, reqfields, paymentamount);
   }
 
   Widget offlineEvent() {
@@ -459,7 +472,7 @@ Course end date : $edate''',
           ),
           validator: (offlineevent) {
             if (offlineevent.isEmpty) {
-              return 'Please select dates';
+              return 'Please add venue';
             }
             return null;
           },
@@ -470,6 +483,7 @@ Course end date : $edate''',
         height: MediaQuery.of(context).size.height * 0,
       );
   }
+
   Widget paidEvent() {
     if (radioButtonItemPay == 'Paid') {
       return Padding(
@@ -491,17 +505,35 @@ Course end date : $edate''',
               borderRadius: BorderRadius.circular(25.0),
             ),
           ),
-          validator: (paidevent) {
-            if (paidevent.isEmpty) {
-              return 'Please enter amount';
-            }
-            return null;
-          },
+//          validator: (paidevent) {
+//            if (paidevent.isEmpty) {
+//              return 'Please enter amount';
+//            }
+//            return null;
+//          },
         ),
       );
     } else
-      return SizedBox(
-        height: MediaQuery.of(context).size.height * 0,
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+        child: TextFormField(
+          enabled: false,
+          controller: paidevent,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "Fees = Rs. 0",
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
+                borderRadius: BorderRadius.circular(25.0)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  width: 32.0),
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+          ),
+        ),
       );
   }
 
