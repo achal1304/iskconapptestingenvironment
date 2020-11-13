@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -9,6 +10,8 @@ import 'package:login/registeredusers.dart';
 import 'coursepayment.dart';
 import 'crud.dart';
 import 'imageDialog.dart';
+import 'message.dart';
+import 'msg.dart';
 
 class CustomCardCoursesDescription extends StatefulWidget {
   BuildContext c1;
@@ -16,22 +19,21 @@ class CustomCardCoursesDescription extends StatefulWidget {
   // GoogleSignIn _googleSignIn;
   // FirebaseUser _user;
 
-  CustomCardCoursesDescription(
-      {@required this.title,
-      @required this.description,
-      //@required this.topic,
-      @required BuildContext context,
-      @required this.isAdmin1,
-      @required this.edate,
-      @required this.stime,
-      @required this.url,
-      @required this.type,
-      @required this.venue,
-      @required this.useremail,
-      @required this.usercoursename,
-      @required this.startdatetimestamp,
-      @required this.registrationform,
-      @required this.payamount}) {
+  CustomCardCoursesDescription({@required this.title,
+    @required this.description,
+    //@required this.topic,
+    @required BuildContext context,
+    @required this.isAdmin1,
+    @required this.edate,
+    @required this.stime,
+    @required this.url,
+    @required this.type,
+    @required this.venue,
+    @required this.useremail,
+    @required this.usercoursename,
+    @required this.startdatetimestamp,
+    @required this.registrationform,
+    @required this.payamount}) {
     c1 = context;
   }
 
@@ -59,6 +61,7 @@ class CustomCardCoursesDescription extends StatefulWidget {
 class _CustomCardCoursesDescriptionState
     extends State<CustomCardCoursesDescription> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   TextEditingController name = TextEditingController();
   TextEditingController address = TextEditingController();
@@ -77,6 +80,8 @@ class _CustomCardCoursesDescriptionState
   TextEditingController contact4 = TextEditingController();
   TextEditingController mailid4 = TextEditingController();
   TextEditingController na = TextEditingController();
+  TextEditingController title = TextEditingController();
+  TextEditingController body = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String result = "";
   bool ispresent = false;
@@ -101,11 +106,72 @@ class _CustomCardCoursesDescriptionState
   final RegExp emailRegex = new RegExp(
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
+  void sendTokenToServer(String fcmToken) {
+    print('Token: $fcmToken');
+    // send key to your server to allow server to use
+    // this token to send push notifications
+  }
+
+  Future sendNotification() async {
+//    final response = await Messaging.sendToAll(
+//      title: widget.title,
+//      body: widget.description,
+//      // fcmToken: fcmToken,
+//    );
+    final response = await Messaging.sendToTopic(
+        title: title.text, body: body.text, topic: widget.description);
+
+    if (response.statusCode != 200) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content:
+        Text('[${response.statusCode}] Error message: ${response.body}'),
+      ));
+    }
+  }
+
+  final List<Message> messages = [];
+
   @override
   void initState() {
     _selectedparticipants = "1";
     super.initState();
     checkIfLikedOrNot();
+    _firebaseMessaging.onTokenRefresh.listen(sendTokenToServer);
+    _firebaseMessaging.getToken();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        final notification = message['notification'];
+        setState(
+              () {
+            messages.add(
+              Message(
+                // title: notification['title'],
+                // body: notification['body'],
+                title: '${notification['title']}',
+                body: '${notification['body']}',
+              ),
+            );
+          },
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+
+        final notification = message['data'];
+        setState(() {
+          messages.add(Message(
+            title: '${notification['title']}',
+            body: '${notification['body']}',
+          ));
+        });
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
 //        .then((dynamic data){
 //      setState(() {
 //        ispresent = data.ex;
@@ -155,7 +221,8 @@ class _CustomCardCoursesDescriptionState
                   onTap: () async {
                     await showDialog(
                         context: context,
-                        builder: (_) => ImageDialog(
+                        builder: (_) =>
+                            ImageDialog(
                               url: widget.url,
                             ));
                   },
@@ -191,7 +258,10 @@ class _CustomCardCoursesDescriptionState
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.16,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.16,
                   ),
                   Text(
                     "Ends on: " + widget.edate,
@@ -234,31 +304,184 @@ class _CustomCardCoursesDescriptionState
             Divider(
               thickness: 0.5,
             ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 100),
+              child: noti(),
+            ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 120),
+              padding: EdgeInsets.symmetric(horizontal: 100),
               child: registration(),
-            )
+            ),
+//            Padding(
+//              padding: EdgeInsets.symmetric(horizontal: 120),
+//              child: noti(),
+//            ),
           ],
         ),
       ),
     );
   }
 
+  Widget noti() {
+    if (widget.isAdmin1 == true) {
+      return FlatButton(
+        textColor: Colors.white,
+        color: Colors.blueAccent,
+//        backgroundColor: Colors.blueAccent,
+//        elevation: 0.5,
+        child:Text(
+          "Send Notification",
+          style: TextStyle(fontSize: 12),
+        ),
+        onPressed: () async {
+          await _showNotiDialog();
+        },
+      );
+    }
+  }
+
+  _showNotiDialog() async {
+    List<dynamic> arr = widget.registrationform;
+    showDialog<String>(
+        context: widget.c1,
+        builder: (BuildContext context) =>
+            StatefulBuilder(builder: (context, setState) {
+              return AlertDialog(
+                content: SingleChildScrollView(
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                      TextFormField(
+                      controller: title,
+                      decoration: InputDecoration(
+//                        prefixIcon: Icon(Icons.mail_outline),
+                        contentPadding:
+                        EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                        hintText: "Title",
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.blueAccent, width: 32.0),
+                            borderRadius: BorderRadius.circular(5.0)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                              Theme
+                                  .of(context)
+                                  .scaffoldBackgroundColor,
+                              width: 32.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+//                          validator: (mailid) {
+//                            if (!emailRegex.hasMatch(mailid)) {
+//                              return 'Please enter valid Email';
+//                            }
+//                            return null;
+//                          },
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    TextFormField(
+                      controller: body,
+                      decoration: InputDecoration(
+//                        prefixIcon: Icon(Icons.person),
+                        contentPadding:
+                        EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                        hintText: "Body",
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.blueAccent, width: 32.0),
+                            borderRadius: BorderRadius.circular(5.0)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                              Theme
+                                  .of(context)
+                                  .scaffoldBackgroundColor,
+                              width: 32.0),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+//                          validator: (name) {
+//                            if (name.isEmpty) {
+//                              return 'Please enter Name';
+//                            }
+//                            return null;
+//                          },
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    FloatingActionButton.extended(
+                      backgroundColor: Colors.blueAccent,
+                      elevation: 0.5,
+                      label: new Text(
+                        "Send Notification",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onPressed: () async {
+                        await sendNotification();
+                      },
+                    )
+                    ],
+                  ),
+                ),
+              ),);
+            }));
+  }
+
   Widget registration() {
     print("ispresent in registration data or not " + ispresent.toString());
     if (widget.isAdmin1 == true && ispresent == false) {
-      return FloatingActionButton.extended(
-        backgroundColor: Colors.blueAccent,
-        elevation: 0.5,
-        label: new Text(
+//      return
+//        Column(
+//        children: <Widget>[
+//          FloatingActionButton.extended(
+//            backgroundColor: Colors.blueAccent,
+//            elevation: 0.5,
+//            label: new Text(
+//              "Registered users",
+//              style: TextStyle(fontSize: 12),
+//            ),
+//            onPressed: () {
+//              Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                      builder: (context) => RegisteredUsers(
+//                            usercoursename: widget.usercoursename,
+//                            useremail: widget.useremail,
+//                            description: widget.description,
+//                          )));
+//            },
+//          ),
+//          FloatingActionButton.extended(
+//            backgroundColor: Colors.blueAccent,
+//            elevation: 0.5,
+//            label: new Text(
+//              "Send Notification",
+//              style: TextStyle(fontSize: 12),
+//            ),
+//            onPressed: () {
+//
+//            },
+//          )
+//        ],
+//      );
+      return FlatButton(
+        textColor: Colors.white,
+        color: Colors.blueAccent,
+        child:Text(
           "Registered users",
           style: TextStyle(fontSize: 12),
         ),
-        onPressed: () {
+        onPressed: () async {
+//          await sendNotification();
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => RegisteredUsers(
+                  builder: (context) =>
+                      RegisteredUsers(
                         usercoursename: widget.usercoursename,
                         useremail: widget.useremail,
                         description: widget.description,
@@ -347,7 +570,7 @@ class _CustomCardCoursesDescriptionState
                                 Divider(),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                  MainAxisAlignment.spaceAround,
                                   children: <Widget>[
                                     FlatButton(
                                       child: Text(
@@ -421,7 +644,7 @@ class _CustomCardCoursesDescriptionState
   }
 
   Widget paidcourse() {
-    if (widget.payamount == 0) {
+    if (widget.payamount == 0 || widget.payamount == null) {
       return Text("Free Course");
     } else
       return Text("Course Fees : Rs." +
@@ -498,6 +721,7 @@ class _CustomCardCoursesDescriptionState
         Future.delayed(Duration(seconds: 2), () {
           _scaffoldKey.currentState.hideCurrentSnackBar();
         });
+        _firebaseMessaging.subscribeToTopic(widget.description);
         Navigator.pop(context);
       }
     } else {
@@ -573,7 +797,7 @@ class _CustomCardCoursesDescriptionState
     }
     if (result == "UpiTransactionStatus.submitted") {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Payment submitted!"),
+        content: Text("Payment submitted!"),
         duration: Duration(seconds: 2),
       ));
       Future.delayed(Duration(seconds: 2), () {
@@ -664,8 +888,7 @@ class _CustomCardCoursesDescriptionState
     }
   }
 
-  Widget _buildchild(
-      List<dynamic> arr,
+  Widget _buildchild(List<dynamic> arr,
       TextEditingController name,
       TextEditingController address,
       TextEditingController contact,
@@ -673,126 +896,138 @@ class _CustomCardCoursesDescriptionState
       String _sp) {
     return Container(
         child: Column(
-      children: <Widget>[
-        Text("Participant :" + _sp),
-        if (_sp != "1")
-          TextFormField(
-            controller: mailid,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.mail_outline),
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Email",
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
-                  borderRadius: BorderRadius.circular(5.0)),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    width: 32.0),
-                borderRadius: BorderRadius.circular(25.0),
+          children: <Widget>[
+            Text("Participant :" + _sp),
+            if (_sp != "1")
+              TextFormField(
+                controller: mailid,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.mail_outline),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  hintText: "Email",
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.blueAccent, width: 32.0),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                validator: (mailid) {
+                  if (!emailRegex.hasMatch(mailid)) {
+                    return 'Please enter valid Email';
+                  }
+                  return null;
+                },
               ),
+            SizedBox(
+              height: 5.0,
             ),
-            validator: (mailid) {
-              if (!emailRegex.hasMatch(mailid)) {
-                return 'Please enter valid Email';
-              }
-              return null;
-            },
-          ),
-        SizedBox(
-          height: 5.0,
-        ),
-        if (arr.contains("Name"))
-          TextFormField(
-            controller: name,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.person),
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Name",
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
-                  borderRadius: BorderRadius.circular(5.0)),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    width: 32.0),
-                borderRadius: BorderRadius.circular(25.0),
+            if (arr.contains("Name"))
+              TextFormField(
+                controller: name,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.person),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  hintText: "Name",
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.blueAccent, width: 32.0),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                validator: (name) {
+                  if (name.isEmpty) {
+                    return 'Please enter Name';
+                  }
+                  return null;
+                },
               ),
+            SizedBox(
+              height: 5.0,
             ),
-            validator: (name) {
-              if (name.isEmpty) {
-                return 'Please enter Name';
-              }
-              return null;
-            },
-          ),
-        SizedBox(
-          height: 5.0,
-        ),
-        if (arr.contains("Address"))
-          TextFormField(
-            controller: address,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.my_location),
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Address",
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
-                  borderRadius: BorderRadius.circular(5.0)),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    width: 32.0),
-                borderRadius: BorderRadius.circular(25.0),
+            if (arr.contains("Address"))
+              TextFormField(
+                controller: address,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.my_location),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  hintText: "Address",
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.blueAccent, width: 32.0),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                validator: (address) {
+                  if (address.isEmpty) {
+                    return 'Please enter Address';
+                  }
+                  return null;
+                },
               ),
+            SizedBox(
+              height: 5.0,
             ),
-            validator: (address) {
-              if (address.isEmpty) {
-                return 'Please enter Address';
-              }
-              return null;
-            },
-          ),
-        SizedBox(
-          height: 5.0,
-        ),
-        if (arr.contains("Contact No."))
-          TextFormField(
-            controller: contact,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.contact_phone),
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Contact No",
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 32.0),
-                  borderRadius: BorderRadius.circular(5.0)),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    width: 32.0),
-                borderRadius: BorderRadius.circular(25.0),
+            if (arr.contains("Contact No."))
+              TextFormField(
+                controller: contact,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.contact_phone),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  hintText: "Contact No",
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.blueAccent, width: 32.0),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                validator: (address) {
+                  if (address.length != 10) {
+                    return 'Please enter valid Contact No.';
+                  }
+                  return null;
+                },
               ),
+            SizedBox(
+              height: 5.0,
             ),
-            validator: (address) {
-              if (address.length != 10) {
-                return 'Please enter valid Contact No.';
-              }
-              return null;
-            },
-          ),
-        SizedBox(
-          height: 5.0,
-        ),
-        Divider(
-          thickness: 0.5,
-        ),
-        if (arr.length == 0)
-          Container(
-            height: 0.0,
-            width: 0.0,
-          )
-      ],
-    ));
+            Divider(
+              thickness: 0.5,
+            ),
+            if (arr.length == 0)
+              Container(
+                height: 0.0,
+                width: 0.0,
+              )
+          ],
+        ));
   }
 
 //  dynamic data;

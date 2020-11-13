@@ -29,6 +29,7 @@ import 'customCard.dart';
 import 'message.dart';
 import 'msg.dart';
 import 'subscriptions.dart';
+import 'foodcoupons.dart';
 
 class NormalUsers extends StatefulWidget {
   bool visible = false;
@@ -303,6 +304,26 @@ class _NormalUsersState extends State<NormalUsers> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditProfile(
+                      //isAdmin: false,
+                      widget._user,
+                      widget._googleSignIn,
+
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: FaIcon(
+                FontAwesomeIcons.hamburger,
+                size: 28.0,
+              ),
+              title: Text('Food Coupons'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FoodCoupon(
                       //isAdmin: false,
                       widget._user,
                       widget._googleSignIn,

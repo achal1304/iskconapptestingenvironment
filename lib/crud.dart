@@ -85,7 +85,8 @@ class Crud {
         'Gender': "",
         'Address': "Address",
         'DOB': " ",
-        'ARR': [true, false, false, false]
+        'ARR': [true, false, false, false],
+        'FoodCoupons': 24
       });
       print("instance created");
     });
