@@ -8,8 +8,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 class FoodCoupon extends StatefulWidget {
   FirebaseUser _user;
   GoogleSignIn _googleSignIn;
+  final int initNumber;
+  final Function(int) counterCallback;
+  final Function increaseCallback;
+  final Function decreaseCallback;
 
-  FoodCoupon(FirebaseUser user, GoogleSignIn signIn) {
+  FoodCoupon(FirebaseUser user, GoogleSignIn signIn,
+      {this.initNumber,
+      this.counterCallback,
+      this.increaseCallback,
+      this.decreaseCallback}) {
     _user = user;
     _googleSignIn = signIn;
   }
@@ -19,9 +27,17 @@ class FoodCoupon extends StatefulWidget {
 }
 
 class _FoodCouponState extends State<FoodCoupon> {
+  int _currentCount = 0;
+  int _currentCountDinn = 0;
+  int _currentCountBrake = 0;
+  int couponsavail = 24;
+
+  Function _counterCallback;
+  Function _increaseCallback;
+  Function _decreaseCallback;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   dynamic data;
-  int couponsavail = 0;
 
   Future<dynamic> getUserProgress() async {
     final DocumentReference document =
@@ -36,6 +52,9 @@ class _FoodCouponState extends State<FoodCoupon> {
 
   void initState() {
     getUserProgress();
+    _counterCallback = widget.counterCallback ?? (int number) {};
+    _increaseCallback = widget.increaseCallback ?? () {};
+    _decreaseCallback = widget.decreaseCallback ?? () {};
     super.initState();
   }
 
@@ -67,10 +86,7 @@ class _FoodCouponState extends State<FoodCoupon> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.02,
+              height: MediaQuery.of(context).size.height * 0.02,
             ),
             Text(
               "Coupons Available : " + couponsavail.toString(),
@@ -82,9 +98,142 @@ class _FoodCouponState extends State<FoodCoupon> {
             Divider(
               thickness: 0.5,
             ),
+            Container(
+              decoration: BoxDecoration(),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Avialable coupon  :" + couponsavail.toString(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text("lunch Copoun")],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _createIncrementDicrementButton(
+                            Icons.remove, () => _dicrement()),
+                        Text(_currentCount.toString()),
+                        _createIncrementDicrementButton(
+                            Icons.add, () => _increment()),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text("Diner Coupon")],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _createIncrementDicrementButton(
+                            Icons.remove, () => _dicrementDin()),
+                        Text(_currentCountDinn.toString()),
+                        _createIncrementDicrementButton(
+                            Icons.add, () => _incrementDin()),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text("Brakefast Copoun")],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _createIncrementDicrementButton(
+                            Icons.remove, () => _dicrementBra()),
+                        Text(_currentCountBrake.toString()),
+                        _createIncrementDicrementButton(
+                            Icons.add, () => _incrementBra()),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
+    );
+  }
+  void _increment() {
+    setState(() {
+      _currentCount++;
+      couponsavail--;
+      _counterCallback(_currentCount);
+      _increaseCallback();
+    });
+  }
+
+  void _dicrement() {
+    setState(() {
+      if (_currentCount > 0) {
+        _currentCount--;
+        couponsavail++;
+        _counterCallback(_currentCount);
+        _decreaseCallback();
+      }
+    });
+  }
+
+  void _incrementDin() {
+    setState(() {
+      _currentCountDinn++;
+      couponsavail--;
+      _counterCallback(_currentCount);
+      _increaseCallback();
+    });
+  }
+
+  void _dicrementDin() {
+    setState(() {
+      if (_currentCountDinn > 0) {
+        _currentCountDinn--;
+        couponsavail++;
+        _counterCallback(_currentCount);
+        _decreaseCallback();
+      }
+    });
+  }
+
+  void _incrementBra() {
+    setState(() {
+      _currentCountBrake++;
+      couponsavail--;
+      _counterCallback(_currentCount);
+      _increaseCallback();
+    });
+  }
+
+  void _dicrementBra() {
+    setState(() {
+      if (_currentCountBrake > 0) {
+        _currentCountBrake--;
+        couponsavail++;
+        _counterCallback(_currentCount);
+        _decreaseCallback();
+      }
+    });
+  }
+  //void coupon() {
+  //setState(() {});
+  //}
+
+  Widget _createIncrementDicrementButton(IconData icon, Function onPressed) {
+    return RawMaterialButton(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      constraints: BoxConstraints(minWidth: 32.0, minHeight: 32.0),
+      onPressed: onPressed,
+      elevation: 2.0,
+      fillColor: Colors.deepOrangeAccent,
+      child: Icon(
+        icon,
+        color: Colors.black,
+        size: 12.0,
+      ),
+      shape: CircleBorder(),
     );
   }
 }
