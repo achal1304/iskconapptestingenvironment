@@ -3,21 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
+import 'crud.dart';
 
 class FoodCoupon extends StatefulWidget {
   FirebaseUser _user;
   GoogleSignIn _googleSignIn;
   final int initNumber;
-  final Function(int) counterCallback;
-  final Function increaseCallback;
-  final Function decreaseCallback;
 
-  FoodCoupon(FirebaseUser user, GoogleSignIn signIn,
-      {this.initNumber,
-      this.counterCallback,
-      this.increaseCallback,
-      this.decreaseCallback}) {
+  FoodCoupon(
+    FirebaseUser user,
+    GoogleSignIn signIn, {
+    this.initNumber,
+  }) {
     _user = user;
     _googleSignIn = signIn;
   }
@@ -30,11 +30,10 @@ class _FoodCouponState extends State<FoodCoupon> {
   int _currentCount = 0;
   int _currentCountDinn = 0;
   int _currentCountBrake = 0;
-  int couponsavail = 24;
+  int couponsavail;
+  String dob = "Select date";
+  DateTime daynow = DateTime.now().add((Duration(days: 3)));
 
-  Function _counterCallback;
-  Function _increaseCallback;
-  Function _decreaseCallback;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   dynamic data;
@@ -44,23 +43,23 @@ class _FoodCouponState extends State<FoodCoupon> {
         Firestore.instance.collection("users").document(widget._user.uid);
 
     await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      // data = snapshot.data;
+      //couponsavail = data['FoodCoupons'];
       setState(() {
         data = snapshot.data;
+        couponsavail = data['FoodCoupons'];
       });
     });
   }
 
   void initState() {
     getUserProgress();
-    _counterCallback = widget.counterCallback ?? (int number) {};
-    _increaseCallback = widget.increaseCallback ?? () {};
-    _decreaseCallback = widget.decreaseCallback ?? () {};
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    couponsavail = data['FoodCoupons'];
+    //couponsavail = data['FoodCoupons'];
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -98,15 +97,66 @@ class _FoodCouponState extends State<FoodCoupon> {
             Divider(
               thickness: 0.5,
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+              child: TextFormField(
+                //controller: address,
+                onTap: () {
+                  // Below line stops keyboard from appearing
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  showDatePicker(
+                    context: context,
+                    initialDate: daynow,
+                    firstDate: daynow,
+                    lastDate: DateTime(2030),
+                    builder: (BuildContext context, Widget child) {
+                      return Theme(
+                        data: ThemeData.light().copyWith(
+                          primaryColor: Colors.blue, //Head background
+                          accentColor: Colors.blue, //selection color
+                          colorScheme: ColorScheme.light(primary: Colors.blue),
+                          buttonTheme: ButtonThemeData(
+                              textTheme: ButtonTextTheme.primary),
+                          //dialogBackgroundColor: Colors.white,//Background color
+                        ),
+                        child: child,
+                      );
+                    },
+                  ).then((date) {
+                    setState(() {
+                      dob = DateFormat('dd/MM/yyyy').format(date);
+                    });
+                    //print('date................' + sdate);
+                  });
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+//                  prefixIcon: Icon(Icons.cake),
+                  hintText: dob,
+                  border: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.blueAccent, width: 32.0),
+                      borderRadius: BorderRadius.circular(25.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+              ),
+            ),
             Container(
               decoration: BoxDecoration(),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "Avialable coupon  :" + couponsavail.toString(),
-                    ),
+//                    Text(
+//                      "Avialable coupon  :" + couponsavail.toString(),
+//                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [Text("lunch Copoun")],
@@ -152,18 +202,52 @@ class _FoodCouponState extends State<FoodCoupon> {
                   ],
                 ),
               ),
-            )
+            ),
+            GFButton(
+              onPressed: () async{
+                if(_currentCount + _currentCountBrake + _currentCountDinn != 0 && dob != "Select date"){
+                  await Crud().addFoodCoupons(widget._user,_currentCountBrake ,_currentCount , _currentCountDinn, dob);
+                  await Crud().updateCouponsAvail(widget._user, couponsavail);
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('Coupons Booked'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+                if(dob == "Select date"){
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('Please select date'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+                if(_currentCount + _currentCountBrake + _currentCountDinn == 0){
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('Please select coupons'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              },
+              text: "Book Coupons",
+              shape: GFButtonShape.pills,
+              size: GFSize.LARGE,
+            ),
           ],
         ),
       ),
     );
   }
+
   void _increment() {
     setState(() {
-      _currentCount++;
-      couponsavail--;
-      _counterCallback(_currentCount);
-      _increaseCallback();
+      if (couponsavail > 0) {
+        _currentCount++;
+        couponsavail--;
+      }
     });
   }
 
@@ -172,19 +256,17 @@ class _FoodCouponState extends State<FoodCoupon> {
       if (_currentCount > 0) {
         _currentCount--;
         couponsavail++;
-        _counterCallback(_currentCount);
-        _decreaseCallback();
       }
     });
   }
 
   void _incrementDin() {
-    setState(() {
-      _currentCountDinn++;
-      couponsavail--;
-      _counterCallback(_currentCount);
-      _increaseCallback();
-    });
+    if (couponsavail > 0) {
+      setState(() {
+        _currentCountDinn++;
+        couponsavail--;
+      });
+    }
   }
 
   void _dicrementDin() {
@@ -192,19 +274,17 @@ class _FoodCouponState extends State<FoodCoupon> {
       if (_currentCountDinn > 0) {
         _currentCountDinn--;
         couponsavail++;
-        _counterCallback(_currentCount);
-        _decreaseCallback();
       }
     });
   }
 
   void _incrementBra() {
-    setState(() {
-      _currentCountBrake++;
-      couponsavail--;
-      _counterCallback(_currentCount);
-      _increaseCallback();
-    });
+    if (couponsavail > 0) {
+      setState(() {
+        _currentCountBrake++;
+        couponsavail--;
+      });
+    }
   }
 
   void _dicrementBra() {
@@ -212,14 +292,9 @@ class _FoodCouponState extends State<FoodCoupon> {
       if (_currentCountBrake > 0) {
         _currentCountBrake--;
         couponsavail++;
-        _counterCallback(_currentCount);
-        _decreaseCallback();
       }
     });
   }
-  //void coupon() {
-  //setState(() {});
-  //}
 
   Widget _createIncrementDicrementButton(IconData icon, Function onPressed) {
     return RawMaterialButton(

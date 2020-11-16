@@ -345,6 +345,29 @@ class Crud {
       print("Name Updated");
     });
   }
+  updateCouponsAvail(FirebaseUser user, int couponsavail) async {
+    DocumentReference documentRef =
+    Firestore.instance.collection("users").document(user.uid);
+    Firestore.instance.runTransaction((transaction) async {
+      await documentRef.updateData({
+        'FoodCoupons': couponsavail
+      });
+      print("Name Updated");
+    });
+  }
+  addFoodCoupons(FirebaseUser user, int breakfast, int lunch,int dinner,String date) async {
+    DocumentReference documentRef =
+    Firestore.instance.collection("users").document(user.uid).collection("Food Coupons").document(date);
+    Firestore.instance.runTransaction((transaction) async {
+      await documentRef.setData({
+        'Date': date,
+        'Breakfast': breakfast,
+        'Lunch': lunch,
+        'Dinner': dinner
+      });
+      print("Name Updated");
+    });
+  }
 
   updateWish(FirebaseUser user, bool wish) async {
     DocumentReference documentRef =
