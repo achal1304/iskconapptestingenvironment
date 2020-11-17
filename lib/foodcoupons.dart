@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:login/ViewCoupons.dart';
 import 'crud.dart';
 
 class FoodCoupon extends StatefulWidget {
@@ -31,7 +32,10 @@ class _FoodCouponState extends State<FoodCoupon> {
   int _currentCountDinn = 0;
   int _currentCountBrake = 0;
   int couponsavail;
-  String dob = "Select date";
+  String dob = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  int prevbreak = 0;
+  int prevlunch = 0;
+  int prevdinn = 0;
   DateTime daynow = DateTime.now().add((Duration(days: 3)));
 
 
@@ -124,7 +128,7 @@ class _FoodCouponState extends State<FoodCoupon> {
                     },
                   ).then((date) {
                     setState(() {
-                      dob = DateFormat('dd/MM/yyyy').format(date);
+                      dob = DateFormat('dd-MM-yyyy').format(date);
                     });
                     //print('date................' + sdate);
                   });
@@ -148,6 +152,37 @@ class _FoodCouponState extends State<FoodCoupon> {
                 ),
               ),
             ),
+            StreamBuilder<DocumentSnapshot>(
+                stream: Firestore.instance
+                    .collection('users')
+                    .document(widget._user.uid).collection("Food Coupons").document(dob).snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error : ${snapshot.error}');
+                  } else if (snapshot.data.exists) {
+                    prevbreak = snapshot.data['Breakfast'];
+                    prevlunch = snapshot.data['Lunch'];
+                    prevdinn = snapshot.data['Dinner'];
+                    if(prevbreak == null)
+                      setState(() {
+                        prevbreak = 0;
+                      });
+                    if(prevlunch == null)
+                      setState(() {
+                        prevlunch = 0;
+                      });
+                    if(prevdinn == null)
+                      setState(() {
+                        prevdinn = 0;
+                      });
+
+                    return Container(
+                      height: 0.0,width: 0.0,
+                    );
+                  }
+                  return Container(height: 0.0,width: 0.0,);
+                }),
             Container(
               decoration: BoxDecoration(),
               child: Center(
@@ -206,7 +241,7 @@ class _FoodCouponState extends State<FoodCoupon> {
             GFButton(
               onPressed: () async{
                 if(_currentCount + _currentCountBrake + _currentCountDinn != 0 && dob != "Select date"){
-                  await Crud().addFoodCoupons(widget._user,_currentCountBrake ,_currentCount , _currentCountDinn, dob);
+                  await Crud().addFoodCoupons(widget._user,_currentCountBrake + prevbreak,_currentCount + prevlunch, _currentCountDinn + prevdinn, dob);
                   await Crud().updateCouponsAvail(widget._user, couponsavail);
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
@@ -233,6 +268,23 @@ class _FoodCouponState extends State<FoodCoupon> {
                 }
               },
               text: "Book Coupons",
+              shape: GFButtonShape.pills,
+              size: GFSize.LARGE,
+            ),
+            GFButton(
+              onPressed: () async{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewCoupons(
+                      //isAdmin: false,
+                      widget._user,
+                      widget._googleSignIn,
+                    ),
+                  ),
+                );
+              },
+              text: "View Coupons",
               shape: GFButtonShape.pills,
               size: GFSize.LARGE,
             ),
