@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:login/premium.dart';
 import 'package:random_color/random_color.dart';
 import 'existancecheck.dart';
 import 'homeS.dart';
@@ -139,7 +140,8 @@ class _SignupState extends State<Signup> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePageS(
+//            builder: (context) => HomePageS(
+            builder: (context) => PremiumCode(
               user,
               _googleSignIn,
             ),

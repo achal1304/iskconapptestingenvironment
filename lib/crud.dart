@@ -63,7 +63,7 @@ class Crud {
     });
   }
 
-  storeData1(FirebaseUser user, dynamic data) async {
+  storeData1(FirebaseUser user, dynamic data, bool prem) async {
     DocumentReference documentRef =
         Firestore.instance.collection("users").document(user.uid);
     Firestore.instance.runTransaction((transaction) async {
@@ -86,7 +86,8 @@ class Crud {
         'Address': "Address",
         'DOB': " ",
         'ARR': [true, false, false, false],
-        'FoodCoupons': 24
+        'FoodCoupons': 24,
+        'premium': prem
       });
       print("instance created");
     });

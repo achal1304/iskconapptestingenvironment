@@ -32,6 +32,7 @@ class _HomePageSState extends State<HomePageS> {
   AsyncSnapshot<DocumentSnapshot> snapshot1;
   dynamic data;
   String a;
+  bool prem = false;
 
   Future<dynamic> getUserProgress() async {
     final DocumentReference document =
@@ -41,6 +42,7 @@ class _HomePageSState extends State<HomePageS> {
       setState(() {
         data = snapshot1.data['admin'];
         a = snapshot1.data['admin'];
+        prem = snapshot1.data['premium'];
         print("new admin value is " + a);
       });
     });
@@ -48,7 +50,7 @@ class _HomePageSState extends State<HomePageS> {
 
   @override
   void initState() {
-    addOnStart(data);
+    addOnStart(data,prem);
     super.initState();
   }
 
@@ -120,9 +122,9 @@ class _HomePageSState extends State<HomePageS> {
     );
   }
 
-  void addOnStart(dynamic data) {
+  void addOnStart(dynamic data,bool prem) {
     //if (data == true)
-    Crud().storeData1(widget._user, data);
+    Crud().storeData1(widget._user, data,prem);
     // else
     //   Crud().storeData(widget._user);
   }
