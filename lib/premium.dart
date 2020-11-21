@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login/crud.dart';
+import 'package:login/homeS.dart';
 import 'package:login/normalusers.dart';
 import 'package:login/signupeditprofile.dart';
 import 'package:random_color/random_color.dart';
@@ -26,9 +27,13 @@ class PremiumCode extends StatefulWidget {
 }
 
 class _PremiumCodeState extends State<PremiumCode> {
+  StreamSubscription<DocumentSnapshot> subscription;
+
   AsyncSnapshot<DocumentSnapshot> snapshot1;
   dynamic data;
   bool prem = false;
+  bool pcheck = false;
+  String couppp = "";
   TextEditingController coup = TextEditingController();
 
   void addOnStart(dynamic data, bool prem) {
@@ -88,60 +93,109 @@ class _PremiumCodeState extends State<PremiumCode> {
   }
 
   Widget showthis() {
-    if (prem == false) {
-      return Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-
-            TextFormField(
-              controller: coup,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                prefixIcon: Icon(Icons.person),
-                hintText: "Please Enter Coupon code",
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.blueAccent, width: 32.0),
-                    borderRadius: BorderRadius.circular(25.0)),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 32.0),
-                  borderRadius: BorderRadius.circular(25.0),
+    return new Scaffold(
+      body: StatefulBuilder(builder: (context, setState) {
+        if (prem == false) {
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: coup,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    prefixIcon: Icon(Icons.person),
+                    hintText: "Please Enter Coupon code",
+                    border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 32.0),
+                        borderRadius: BorderRadius.circular(25.0)),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          width: 32.0),
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
                 ),
-              ),
+                GFButton(
+                  onPressed: () {
+                    setState(() {
+                      couppp = coup.text;
+                    });
+                    checkprem(couppp);
+                    addOnStart(data, pcheck);
+                    if(pcheck == true){
+                      Timer(Duration(seconds: 1), () {
+                        // 5s over, navigate to a new page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePageS(
+                              widget._user,
+                              widget._googleSignIn,
+                            ),
+                          ),
+                        );
+                      });
+                    }
+                  },
+                  text: "Verify",
+                  shape: GFButtonShape.pills,
+                  size: GFSize.LARGE,
+                ),
+                couponcheck(),
+              ],
             ),
-            GFButton(
-              onPressed: () {
-                checkprem(coup.text);
-              },
-              text: "Verify",
-              shape: GFButtonShape.pills,
-              size: GFSize.LARGE,
-            ),
-          ],
-        ),
-      );
+          );
+        } else {
+          return Text("Already registered");
+        }
+      }),
+    );
+  }
+
+  Widget couponcheck() {
+    if (pcheck == true) {
+      return Text("Coupon Verified");
     } else
-      return Text("Already registered");
+      return Text("Please enter a valid coupon code");
   }
 
   checkprem(String premcoupon) {
-    StreamBuilder<DocumentSnapshot>(
-        stream: Firestore.instance
-            .collection('PremiumCoupons')
-            .document(premcoupon)
-            .snapshots(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error : ${snapshot.error}');
-          } else if (snapshot.data.exists) {
-            return Text("Coupon Code verified");
-          }
-          return Text("Wrong Coupon code");
+    final DocumentReference documentReference =
+        Firestore.instance.collection('PremiumCoupons').document(premcoupon);
+    subscription = documentReference.snapshots().listen((datasnapshot) {
+      if (datasnapshot.exists) {
+        setState(() {
+          pcheck = true;
         });
+      } else if (!datasnapshot.exists) {
+        setState(() {
+          pcheck = false;
+        });
+      }
+    });
+//    StreamBuilder<DocumentSnapshot>(
+//        stream: Firestore.instance
+//            .collection('PremiumCoupons')
+//            .document(premcoupon)
+//            .snapshots(),
+//        builder:
+//            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+//          print("snapshot has value *******" + snapshot.data.toString());
+//          if (snapshot.hasError) {
+//            return Text('Error : ${snapshot.error}');
+//          } else if (snapshot.data.exists) {
+//            print(
+//                "Visited here************************************************");
+//            pcheck = true;
+//            setState(() {
+//              pcheck = true;
+//            });
+//          }
+//          return Text("Wrong Coupon code");
+//        });
   }
 }
