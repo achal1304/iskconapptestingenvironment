@@ -7,6 +7,7 @@ import 'package:random_color/random_color.dart';
 
 import 'crud.dart';
 import 'homeL.dart';
+import 'premium.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -180,7 +181,7 @@ class _WelcomeState extends State<Welcome> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePageL(
+        builder: (context) => PremiumCode(
           user,
           _googleSignIn,
         ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login/crud.dart';
+import 'package:login/homeL.dart';
 import 'package:login/homeS.dart';
 import 'package:login/normalusers.dart';
 import 'package:login/signupeditprofile.dart';
@@ -57,7 +58,9 @@ class _PremiumCodeState extends State<PremiumCode> {
 
   @override
   void initState() {
-    addOnStart(data, prem);
+    getUserProgress();
+//    addOnStart(data, prem);
+
     super.initState();
   }
 
@@ -132,7 +135,7 @@ class _PremiumCodeState extends State<PremiumCode> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePageS(
+                            builder: (context) => HomePageL(
                               widget._user,
                               widget._googleSignIn,
                             ),
@@ -150,6 +153,15 @@ class _PremiumCodeState extends State<PremiumCode> {
             ),
           );
         } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePageL(
+                widget._user,
+                widget._googleSignIn,
+              ),
+            ),
+          );
           return Text("Already registered");
         }
       }),

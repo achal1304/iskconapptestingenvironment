@@ -140,8 +140,8 @@ class _SignupState extends State<Signup> {
         Navigator.push(
           context,
           MaterialPageRoute(
-//            builder: (context) => HomePageS(
-            builder: (context) => PremiumCode(
+            builder: (context) => HomePageS(
+//            builder: (context) => PremiumCode(
               user,
               _googleSignIn,
             ),
