@@ -67,7 +67,7 @@ class _ExistanceCheckState extends State<ExistanceCheck> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Login(),
+                          builder: (context) => Login(null, null),
                           fullscreenDialog: true,
                         ));
                   },

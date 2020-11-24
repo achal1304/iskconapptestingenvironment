@@ -18,6 +18,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 
 import 'crud.dart';
 import 'normalusers.dart';
+import 'premium.dart';
 
 const kGoogleApiKey = "AIzaSyDA2vSkZdEb9_8Gz-ivOP1vW8QOu01xEW0";
 
@@ -745,7 +746,7 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NormalUsers(
+                    builder: (context) => PremiumCode(
                       widget._user,
                       widget._googleSignIn,
                     ),

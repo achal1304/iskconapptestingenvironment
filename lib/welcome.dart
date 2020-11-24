@@ -4,12 +4,19 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login/login.dart';
 import 'package:login/signup.dart';
 import 'package:random_color/random_color.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'crud.dart';
 import 'homeL.dart';
 import 'premium.dart';
 
 class Welcome extends StatefulWidget {
+  FirebaseUser _user;
+
+  Welcome(FirebaseUser user) {
+    _user = user;
+  }
+
   @override
   _WelcomeState createState() => _WelcomeState();
 }
@@ -20,6 +27,29 @@ class _WelcomeState extends State<Welcome> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   bool isLoading = false;
+  bool prem;
+  AsyncSnapshot<DocumentSnapshot> snapshot1;
+  dynamic data;
+
+//  Future<dynamic> getUserProgress() async {
+//    final DocumentReference document =
+//        Firestore.instance.collection("users").document(widget._user.uid);
+//
+//    await document.get().then<dynamic>((DocumentSnapshot snapshot1) async {
+//      setState(() {
+//        data = snapshot1.data['admin'];
+//        prem = snapshot1.data['premium'];
+//      });
+//    });
+//  }
+
+  @override
+  void initState() {
+//    getUserProgress();
+//    addOnStart(data, prem);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +201,8 @@ class _WelcomeState extends State<Welcome> {
     FirebaseUser user = await _handleSignIn();
     Crud().getData().then(
       (val) {
+//        prem = val.documents[user.uid].data["admin"];
+//        print("premmiummmm ********* = " + prem.toString());
         if (val.documents.length > 0) {
           print(val.documents[user.uid].data["admin"]);
         } else {
@@ -178,14 +210,37 @@ class _WelcomeState extends State<Welcome> {
         }
       },
     );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PremiumCode(
-          user,
-          _googleSignIn,
+    final DocumentReference document =
+        Firestore.instance.collection("users").document(user.uid);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot1) async {
+      setState(() {
+        prem = snapshot1.data['premium'];
+      });
+    });
+    print("Value of premiumm  welcome.dart file is ************ = " +
+        prem.toString());
+
+    if (prem == false) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PremiumCode(
+            user,
+            _googleSignIn,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePageL(
+            user,
+            _googleSignIn,
+          ),
+        ),
+      );
+    }
   }
 }

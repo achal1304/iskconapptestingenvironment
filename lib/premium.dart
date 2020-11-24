@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +14,8 @@ import 'package:login/signupeditprofile.dart';
 import 'package:random_color/random_color.dart';
 
 import 'adminpage.dart';
+
+//var flag = 0;
 
 class PremiumCode extends StatefulWidget {
   GoogleSignIn _googleSignIn;
@@ -97,74 +100,59 @@ class _PremiumCodeState extends State<PremiumCode> {
 
   Widget showthis() {
     return new Scaffold(
-      body: StatefulBuilder(builder: (context, setState) {
-        if (prem == false) {
-          return Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                TextFormField(
-                  controller: coup,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    prefixIcon: Icon(Icons.person),
-                    hintText: "Please Enter Coupon code",
-                    border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.blueAccent, width: 32.0),
-                        borderRadius: BorderRadius.circular(25.0)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          width: 32.0),
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            TextFormField(
+              controller: coup,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                prefixIcon: Icon(Icons.person),
+                hintText: "Please Enter Coupon code",
+                border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 32.0),
+                    borderRadius: BorderRadius.circular(25.0)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      width: 32.0),
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
-                GFButton(
-                  onPressed: () {
-                    setState(() {
-                      couppp = coup.text;
-                    });
-                    checkprem(couppp);
-                    addOnStart(data, pcheck);
-                    if(pcheck == true){
-                      Timer(Duration(seconds: 1), () {
-                        // 5s over, navigate to a new page
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePageL(
-                              widget._user,
-                              widget._googleSignIn,
-                            ),
-                          ),
-                        );
-                      });
-                    }
-                  },
-                  text: "Verify",
-                  shape: GFButtonShape.pills,
-                  size: GFSize.LARGE,
-                ),
-                couponcheck(),
-              ],
-            ),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePageL(
-                widget._user,
-                widget._googleSignIn,
               ),
             ),
-          );
-          return Text("Already registered");
-        }
-      }),
+            GFButton(
+              onPressed: () {
+                setState(() {
+                  couppp = coup.text;
+                });
+                checkprem(couppp);
+                addOnStart(data, pcheck);
+                if (pcheck == true) {
+                  Timer(Duration(seconds: 1), () {
+                    // 5s over, navigate to a new page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePageL(
+                          widget._user,
+                          widget._googleSignIn,
+                        ),
+                      ),
+                    );
+                  });
+                }
+              },
+              text: "Verify",
+              shape: GFButtonShape.pills,
+              size: GFSize.LARGE,
+            ),
+            couponcheck(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -189,25 +177,5 @@ class _PremiumCodeState extends State<PremiumCode> {
         });
       }
     });
-//    StreamBuilder<DocumentSnapshot>(
-//        stream: Firestore.instance
-//            .collection('PremiumCoupons')
-//            .document(premcoupon)
-//            .snapshots(),
-//        builder:
-//            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-//          print("snapshot has value *******" + snapshot.data.toString());
-//          if (snapshot.hasError) {
-//            return Text('Error : ${snapshot.error}');
-//          } else if (snapshot.data.exists) {
-//            print(
-//                "Visited here************************************************");
-//            pcheck = true;
-//            setState(() {
-//              pcheck = true;
-//            });
-//          }
-//          return Text("Wrong Coupon code");
-//        });
   }
 }
