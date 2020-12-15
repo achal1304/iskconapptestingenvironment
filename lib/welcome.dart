@@ -27,7 +27,7 @@ class _WelcomeState extends State<Welcome> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   bool isLoading = false;
-  bool prem;
+  bool prem = true;
   AsyncSnapshot<DocumentSnapshot> snapshot1;
   dynamic data;
 
@@ -90,7 +90,7 @@ class _WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(
-              image: AssetImage('assets/iskconwhiteresize.png'),
+              image: AssetImage('assets/fortunate families.png'),
               height: 200,
               width: 200,
             ),
@@ -210,14 +210,18 @@ class _WelcomeState extends State<Welcome> {
         }
       },
     );
-    final DocumentReference document =
-        Firestore.instance.collection("users").document(user.uid);
+      final DocumentReference document =
+      Firestore.instance.collection("users").document(user.uid);
 
-    await document.get().then<dynamic>((DocumentSnapshot snapshot1) async {
-      setState(() {
-        prem = snapshot1.data['premium'];
+      await document.get().then<dynamic>((DocumentSnapshot snapshot1) async {
+        if(snapshot1.exists){
+          setState(() {
+            prem = snapshot1.data['premium'];
+          });
+        }
       });
-    });
+
+
     print("Value of premiumm  welcome.dart file is ************ = " +
         prem.toString());
 

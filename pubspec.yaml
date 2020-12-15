@@ -37,13 +37,12 @@ dependencies:
   google_sign_in: any
   firebase_messaging: any
   flutter_slidable: ^0.5.4
-  flutter_datetime_picker:
-    git:
-      url: https://github.com/derohimat/flutter_datetime_picker.git
+
+  flutter_datetime_picker: ^1.4.0
   font_awesome_flutter: ^8.8.1
   google_fonts: any
   # video_player: any
-  just_audio: any
+  just_audio: 0.2.0
   url_audio_stream: any
   firebase_storage: any
   image_picker: any
@@ -58,7 +57,7 @@ dependencies:
   badges: ^1.1.1
   toast: ^0.1.5
   random_color: ^1.0.5
-  file_picker: any
+  file_picker: 1.7.0
   #upi_india: ^2.0.0
   youtube_player_flutter: any
 

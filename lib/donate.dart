@@ -12,6 +12,7 @@ class Donate extends StatefulWidget {
 
 class _DonateState extends State<Donate> {
   String _upiAddrError;
+  String _upiAmountError;
 
   final _upiAddressController = TextEditingController();
   final _amountController = TextEditingController();
@@ -45,9 +46,16 @@ class _DonateState extends State<Donate> {
 
   Future<void> _onTap(ApplicationMeta app) async {
     final err = _validateUpiAddress(_upiAddressController.text);
+    final err2 = _validateUpiAmount(_amountController.text);
     if (err != null) {
       setState(() {
         _upiAddrError = err;
+      });
+      return;
+    }
+    if (err2 != null) {
+      setState(() {
+        _upiAmountError = err;
       });
       return;
     }
@@ -142,6 +150,7 @@ class _DonateState extends State<Donate> {
                       Expanded(
                         child: TextField(
                           controller: _amountController,
+                          keyboardType: TextInputType.number,
                           // readOnly: true,
                           // enabled: false,
                           decoration: InputDecoration(
@@ -160,6 +169,14 @@ class _DonateState extends State<Donate> {
                     ],
                   ),
                 ),
+                if (_upiAmountError != null)
+                  Container(
+                    margin: EdgeInsets.only(top: 4, left: 12),
+                    child: Text(
+                      _upiAmountError,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
                 Container(
                   margin: EdgeInsets.only(top: 128, bottom: 32),
                   child: Column(
@@ -225,6 +242,12 @@ class _DonateState extends State<Donate> {
           )),
     );
   }
+  String _validateUpiAmount(String value) {
+    if (value.isEmpty) {
+      return 'UPI Amount is required.';
+    }
+    return null;
+  }
 }
 
 String _validateUpiAddress(String value) {
@@ -238,3 +261,4 @@ String _validateUpiAddress(String value) {
 
   return null;
 }
+

@@ -84,23 +84,37 @@ class _PremiumCodeState extends State<PremiumCode> {
     MyColor _myColor2 = getColorNameFromColor(_color2);
     print(_myColor2.getName);
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: /*[Colors.orange.shade300, Colors.orange.shade800]*/ [
-            _color1,
-            _color2
-          ],
-        ),
-      ),
       child: showthis(),
     );
   }
 
   Widget showthis() {
+    RandomColor _randomColor1 = RandomColor();
+    Color _color1 = _randomColor1.randomColor(
+        colorSaturation: ColorSaturation.highSaturation,
+        colorHue: ColorHue.multiple(colorHues: <ColorHue>[ColorHue.blue]));
+
+    MyColor _myColor1 = getColorNameFromColor(_color1);
+    print(_myColor1.getName);
+
+    RandomColor _randomColor2 = RandomColor();
+    Color _color2 = _randomColor2.randomColor(
+        colorSaturation: ColorSaturation.highSaturation,
+        colorHue: ColorHue.multiple(colorHues: <ColorHue>[ColorHue.red]));
+    MyColor _myColor2 = getColorNameFromColor(_color2);
+    print(_myColor2.getName);
     return new Scaffold(
       body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: /*[Colors.orange.shade300, Colors.orange.shade800]*/ [
+              _color1,
+              _color2
+            ],
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,60 +124,74 @@ class _PremiumCodeState extends State<PremiumCode> {
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 prefixIcon: Icon(Icons.person),
+                fillColor: Colors.white,
                 hintText: "Please Enter Coupon code",
                 border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.blueAccent, width: 32.0),
+                    borderSide: BorderSide(color: Colors.white, width: 32.0),
                     borderRadius: BorderRadius.circular(25.0)),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 32.0),
+                  borderSide: BorderSide(color: Colors.white, width: 32.0),
                   borderRadius: BorderRadius.circular(25.0),
                 ),
               ),
             ),
             GFButton(
-              onPressed: () {
+              onPressed: () async{
                 setState(() {
                   couppp = coup.text;
                 });
-                checkprem(couppp);
+                await checkprem(couppp);
                 addOnStart(data, pcheck);
-                if (pcheck == true) {
-                  Timer(Duration(seconds: 1), () {
-                    // 5s over, navigate to a new page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePageL(
-                          widget._user,
-                          widget._googleSignIn,
-                        ),
-                      ),
-                    );
-                  });
-                }
+
               },
               text: "Verify",
               shape: GFButtonShape.pills,
               size: GFSize.LARGE,
+
             ),
+            singleclick(),
             couponcheck(),
           ],
         ),
       ),
     );
   }
+  Widget singleclick() {
+    if (pcheck == true) {
+      return  GFButton(
+        onPressed: () async{
+          if (pcheck == true) {
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePageL(
+                    widget._user,
+                    widget._googleSignIn,
+                  ),
+                ),
+              );
+
+          }
+        },
+        text: "Visit App",
+        shape: GFButtonShape.pills,
+        size: GFSize.LARGE,
+      );
+    }
+    else
+      return Container(width: 0.0,height: 0.0,);
+  }
+
 
   Widget couponcheck() {
     if (pcheck == true) {
-      return Text("Coupon Verified");
+      return Text("Coupon Verified",style: TextStyle(color: Colors.white),);
     } else
-      return Text("Please enter a valid coupon code");
+      return Text("Please enter a valid coupon code",style: TextStyle(color: Colors.red),);
   }
 
-  checkprem(String premcoupon) {
+  Future checkprem(String premcoupon) async{
     final DocumentReference documentReference =
         Firestore.instance.collection('PremiumCoupons').document(premcoupon);
     subscription = documentReference.snapshots().listen((datasnapshot) {

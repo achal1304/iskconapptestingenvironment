@@ -44,7 +44,7 @@ class _FoodCouponState extends State<FoodCoupon> {
 
   Future<dynamic> getUserProgress() async {
     final DocumentReference document =
-        Firestore.instance.collection("users").document(widget._user.uid);
+    Firestore.instance.collection("users").document(widget._user.uid);
 
     await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
       // data = snapshot.data;
@@ -65,26 +65,27 @@ class _FoodCouponState extends State<FoodCoupon> {
   Widget build(BuildContext context) {
     //couponsavail = data['FoodCoupons'];
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Book Coupons',
-          style: TextStyle(color: Colors.black),
-          textScaleFactor: 1.2,
+        key: _scaffoldKey,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            'Book Coupons',
+            style: TextStyle(color: Colors.black),
+            textScaleFactor: 1.2,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.5,
+          leading: IconButton(
+            icon: FaIcon(Icons.arrow_back_ios),
+            color: Colors.black,
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: FaIcon(Icons.arrow_back_ios),
-          color: Colors.black,
-          iconSize: 35,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
+        body:
+      SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
