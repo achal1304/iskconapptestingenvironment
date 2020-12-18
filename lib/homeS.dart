@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:login/crud.dart';
-import 'package:login/normalusers.dart';
-import 'package:login/signupeditprofile.dart';
+import 'crud.dart';
+import 'normalusers.dart';
+import 'signupeditprofile.dart';
 import 'package:random_color/random_color.dart';
 
 import 'adminpage.dart';

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:login/login.dart';
-import 'package:login/signup.dart';
+import 'login.dart';
+import 'signup.dart';
 import 'package:random_color/random_color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

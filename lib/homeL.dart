@@ -9,9 +9,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:login/adminpage.dart';
-import 'package:login/picker.dart';
-import 'package:login/signup.dart';
+import 'adminpage.dart';
+import 'picker.dart';
+import 'signup.dart';
 import 'package:random_color/random_color.dart';
 
 import 'normalusers.dart';

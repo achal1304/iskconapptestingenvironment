@@ -9,7 +9,7 @@ import 'package:getflutter/getflutter.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:login/placedetailview.dart';
+import 'placedetailview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -541,7 +541,8 @@ class _EditProfileState extends State<EditProfile> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   prefixIcon: Icon(Icons.cake),
-                  hintText: "DOB :" + data['DOB'],
+                  // hintText: "DOB :" + data['DOB'],
+                  hintText: dob == "" ? "DOB :" + data['DOB'] : dob,
                   border: OutlineInputBorder(
                       borderSide:
                       BorderSide(color: Colors.blueAccent, width: 32.0),

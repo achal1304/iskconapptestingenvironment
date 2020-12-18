@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:login/login.dart';
+import 'login.dart';
 import 'package:random_color/random_color.dart';
 
 class ExistanceCheck extends StatefulWidget {

@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login/crud.dart';
+import 'crud.dart';
 import 'package:path/path.dart' as Path;
 import 'dart:io';
 import 'registrationform.dart';

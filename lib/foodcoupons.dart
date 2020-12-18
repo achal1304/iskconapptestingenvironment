@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:login/ViewCoupons.dart';
+import 'ViewCoupons.dart';
 import 'crud.dart';
 
 class FoodCoupon extends StatefulWidget {

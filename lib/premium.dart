@@ -6,11 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:login/crud.dart';
-import 'package:login/homeL.dart';
-import 'package:login/homeS.dart';
-import 'package:login/normalusers.dart';
-import 'package:login/signupeditprofile.dart';
+import 'crud.dart';
+import 'homeL.dart';
+import 'homeS.dart';
+import 'normalusers.dart';
+import 'signupeditprofile.dart';
 import 'package:random_color/random_color.dart';
 
 import 'adminpage.dart';

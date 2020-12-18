@@ -8,7 +8,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:login/adminpage.dart';
-import 'package:login/crud.dart';
+import 'crud.dart';
 import 'editpage.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:path/path.dart' as Path;

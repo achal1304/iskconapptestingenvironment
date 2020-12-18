@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //Image Plugin
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login/demo.dart';
+import 'demo.dart';
 import 'package:path/path.dart' as Path;
 
 //import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
